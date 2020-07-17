@@ -2,6 +2,7 @@
 const { validate } = use("Validator");
 const User = use("App/Models/User");
 const Database = use("Database");
+const Hash = use('Hash')
 class SesionController {
 
     async sesion({ request, auth, response }) {
@@ -29,9 +30,9 @@ class SesionController {
         }
 
         try {
-            const token = await auth.attempt(username, password);
+            const token = await auth.attempt(email, password);
             const users = await User.all();
-            return response.status(200).send({ 'message': "ok", data: { token, username, users } });
+            return response.status(200).send({ 'message': "ok", data: { token, email, users } });
         } catch (error) {
             return response.status(400).send({ status: 'error', 'message': error });
         }
@@ -39,7 +40,7 @@ class SesionController {
 
     async registrar({ request, response }) {
         const {username,nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento,password } = request.all();
-        console.log(username,email, password);
+        console.log(username,nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento,password);
         const validation = await validate(request.all(), {
             username: 'required',
             email: 'required|email',
@@ -70,10 +71,10 @@ class SesionController {
             apellidoM,
             foto,
             fecha_nacimiento,
-            password,
+            password
         });
 
-        return this.login(...arguments);
+        return this.sesion(...arguments);
 
         //return response.status(200).send({message:'Has creado tu usuario con exito.'})
     }
