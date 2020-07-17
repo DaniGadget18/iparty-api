@@ -31,18 +31,16 @@ class SesionController {
 
         try {
             const token = await auth.attempt(email, password);
-            const users = await User.all();
-            return response.status(200).send({ 'message': "ok", data: { token, email, users } });
+            return response.status(200).send({ 'message': "ok", data: { token, email } });
         } catch (error) {
             return response.status(400).send({ status: 'error', 'message': error });
         }
     }
 
     async registrar({ request, response }) {
-        const {username,nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento,password } = request.all();
-        console.log(username,nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento,password);
+        const {nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento,password } = request.all();
+        console.log(email, password);
         const validation = await validate(request.all(), {
-            username: 'required',
             email: 'required|email',
             nombre: 'required',
             apellidoP: 'required',
@@ -64,14 +62,13 @@ class SesionController {
         }
 
         const userBD = await User.create({
-            username,
             email,
             nombre,
             apellidoP,
             apellidoM,
             foto,
             fecha_nacimiento,
-            password
+            password,
         });
 
         return this.sesion(...arguments);
