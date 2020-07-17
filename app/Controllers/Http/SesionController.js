@@ -75,6 +75,26 @@ class SesionController {
 
         //return response.status(200).send({message:'Has creado tu usuario con exito.'})
     }
+    async editarusuario({request,response}){
+        const {username,nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento} = request.all()
+    
+        const user = await Database
+          .table('users')
+          .where('email',email)
+          .update({
+            username: username,
+            email:email ,
+            nombre: nombre,
+            apellidoP: apellidoP,
+            apellidoM: apellidoM,
+            foto: foto,
+            fecha_nacimiento: fecha_nacimiento,
+          })
+    
+        console.log(nombre)
+        const editar = await Database.from('users').where('email', email)
+        return response.status(200).send({message:'usuario editado con exito', data:editar})
+      }
 
 }
 
