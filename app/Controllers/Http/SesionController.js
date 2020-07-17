@@ -1,14 +1,15 @@
 'use strict'
+const { validate } = use("Validator");
 const User = use("App/Models/User");
 const Database = use("Database");
 class SesionController {
 
     async sesion({ request, auth, response }) {
-        const { user, password } = request.all();
+        const { username, password } = request.all();
 
 
         const validation = await validate(request.all(), {
-            user: "required",
+            username: "required",
             password: "required",
         });
 
@@ -16,7 +17,7 @@ class SesionController {
             return response.status(400).send({ message: validation.messages() });
         }
 
-        const userFound = await User.findBy("user", user);
+        const userFound = await User.findBy("username", username);
         if (!userFound) {
             return response.status(400).send({ message: "No existe este usuario" });
         }
@@ -28,9 +29,9 @@ class SesionController {
         }
 
         try {
-            const token = await auth.attempt(user, password);
+            const token = await auth.attempt(username, password);
             const users = await User.all();
-            return response.status(200).send({ 'message': "ok", data: { token, user, users } });
+            return response.status(200).send({ 'message': "ok", data: { token, username, users } });
         } catch (error) {
             return response.status(400).send({ status: 'error', 'message': error });
         }
@@ -40,24 +41,36 @@ class SesionController {
         const { user, password } = request.all();
         console.log(user, password);
         const validation = await validate(request.all(), {
-            user: 'required',
-            password: 'required|min:5'
+            username: 'required',
+            email: 'required|email',
+            nombre: 'required',
+            apellidoP: 'required',
+            apellidoM: 'required',
+            foto: 'required',
+            fecha_nacimiento: 'required',
+            password: 'required|min:5',
         });
 
         if (validation.fails()) {
             return response.status(400).send({ message: validation.messages() })
         }
 
-        const userFound = await User.findBy("user", user);
+        const userFound = await User.findBy("email", email);
         if (userFound) {
             return response.send({
-                status: 'error', message: 'Ya existe un usuario creado con ese usuario.'
+                status: 'error', message: 'Ya existe un usuario creado con ese correo.'
             });
         }
 
         const userBD = await User.create({
-            user,
-            password
+            username,
+            email,
+            nombre,
+            apellidoP,
+            apellidoM,
+            foto,
+            fecha_nacimiento,
+            password,
         });
 
         return this.login(...arguments);
