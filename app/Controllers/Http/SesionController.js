@@ -5,11 +5,11 @@ const Database = use("Database");
 class SesionController {
 
     async sesion({ request, auth, response }) {
-        const { username, password } = request.all();
+        const { email, password } = request.all();
 
 
         const validation = await validate(request.all(), {
-            username: "required",
+            email: "required",
             password: "required",
         });
 
@@ -17,7 +17,7 @@ class SesionController {
             return response.status(400).send({ message: validation.messages() });
         }
 
-        const userFound = await User.findBy("username", username);
+        const userFound = await User.findBy("email", email);
         if (!userFound) {
             return response.status(400).send({ message: "No existe este usuario" });
         }
@@ -38,8 +38,8 @@ class SesionController {
     }
 
     async registrar({ request, response }) {
-        const { user, password } = request.all();
-        console.log(user, password);
+        const {username,nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento,password } = request.all();
+        console.log(username,email, password);
         const validation = await validate(request.all(), {
             username: 'required',
             email: 'required|email',
@@ -48,7 +48,7 @@ class SesionController {
             apellidoM: 'required',
             foto: 'required',
             fecha_nacimiento: 'required',
-            password: 'required|min:5',
+            password: 'required|min:5'
         });
 
         if (validation.fails()) {
