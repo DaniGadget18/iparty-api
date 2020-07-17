@@ -9,6 +9,7 @@ class HistoriaSchema extends Schema {
       table.increments()
       table.integer('id_usuario').unsigned().references('id').inTable('users')
       table.integer('id_negocios').unsigned().references('id').inTable('negocios')
+      table.integer('duracion').notNullable()
       table.string('url_file', 100).notNullable()
       table.string('url_miniatura', 100).notNullable()
       table.string('descripcion', 150).nullable()
