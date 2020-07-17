@@ -22,3 +22,4 @@ Route.get('/api', () => {
 
 Route.post('login', 'SesionController.sesion');
 Route.post('signup', 'SesionController.registrar');
+Route.post('update', 'SesionController.editarusuario');
