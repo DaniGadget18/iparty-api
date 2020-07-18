@@ -3,6 +3,7 @@ const { validate } = use("Validator");
 const User = use("App/Models/User");
 const Database = use("Database");
 const Hash = use('Hash')
+const Mail = use('Mail')
 class SesionController {
 
     async sesion({ request, auth, response }) {
@@ -95,6 +96,20 @@ class SesionController {
         const editar = await Database.from('users').where('email', email)
         return response.status(200).send({message:'usuario editado con exito', data:editar})
       }
+
+      async correo ({ request, response }) {
+        const { email} = request.all()
+        console.log(email)
+    
+        await Mail.raw('asda', (message) => {
+            message.from(email)
+            message.to('baz@bar.com')
+          })
+    
+        return 'Registered successfully  stack'
+      }
+
+
 
 }
 
