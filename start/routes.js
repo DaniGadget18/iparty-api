@@ -26,5 +26,14 @@ Route.group(() => {
  Route.post('signup', 'SesionController.registrar');
  Route.post('update', 'SesionController.editarusuario');
  Route.post('correo', 'SesionController.correo');
+
 }).prefix('api/')
 
+
+
+
+Route.group( () => {
+  Route.post('registrarNegocio', 'NegocioController.registrarNegocio');
+  Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
+  Route.get('obtenerNegocio', 'NegocioController.obtenerNegocio');
+}).prefix('api/negocio/')
