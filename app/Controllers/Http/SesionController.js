@@ -32,20 +32,27 @@ class SesionController {
 
         try {
             const token = await auth.attempt(email, password);
-            return response.status(200).send({ 'message': "ok", data: { token, email } });
+            const data = await Database
+                        .table('users')
+                        .where('users.email', email)
+                        .innerJoin('administradores', 'users.id', 'administradores.id_usuario');
+            if(typeof data.foo !== 'undefined'){
+              return response.status(200).send({ 'message': "ok", data: { token, email, data } });
+            }else{
+              return response.status(200).send({ 'message': "ok", data: { token, email } });
+            }
+
         } catch (error) {
             return response.status(400).send({ status: 'error', 'message': error });
         }
     }
 
     async registrar({ request, response }) {
-        const {nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento,password } = request.all();
-        console.log(email, password);
+        const {nombre, email, foto, fecha_nacimiento, password } = request.all();
+
         const validation = await validate(request.all(), {
             email: 'required|email',
             nombre: 'required',
-            apellidoP: 'required',
-            apellidoM: 'required',
             foto: 'required',
             fecha_nacimiento: 'required',
             password: 'required|min:5'
@@ -65,8 +72,6 @@ class SesionController {
         const userBD = await User.create({
             email,
             nombre,
-            apellidoP,
-            apellidoM,
             foto,
             fecha_nacimiento,
             password,
@@ -77,8 +82,8 @@ class SesionController {
         //return response.status(200).send({message:'Has creado tu usuario con exito.'})
     }
     async editarusuario({request,response}){
-        const {username,nombre,apellidoP, email,apellidoM,foto, fecha_nacimiento} = request.all()
-    
+        const {username, nombre, email, foto, fecha_nacimiento} = request.all()
+
         const user = await Database
           .table('users')
           .where('email',email)
@@ -86,12 +91,10 @@ class SesionController {
             username: username,
             email:email ,
             nombre: nombre,
-            apellidoP: apellidoP,
-            apellidoM: apellidoM,
             foto: foto,
             fecha_nacimiento: fecha_nacimiento,
           })
-    
+
         console.log(nombre)
         const editar = await Database.from('users').where('email', email)
         return response.status(200).send({message:'usuario editado con exito', data:editar})
@@ -100,12 +103,12 @@ class SesionController {
       async correo ({ request, response }) {
         const { email} = request.all()
         console.log(email)
-    
+
         await Mail.raw('asda', (message) => {
             message.from(email)
             message.to('baz@bar.com')
           })
-    
+
         return 'Registered successfully  stack'
       }
 

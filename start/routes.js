@@ -27,3 +27,4 @@ Route.group(() => {
  Route.post('update', 'SesionController.editarusuario');
  Route.post('correo', 'SesionController.correo');
 }).prefix('api/')
+
