@@ -7,7 +7,7 @@ const Hash = use('Hash');
 class NegocioController {
 
   async obtenerNegocio({response, request}) {
-    const id = request.all();
+    const { id } = request.all();
     const negocio = await Database
       .from('negocios')
       .where('id', id);
