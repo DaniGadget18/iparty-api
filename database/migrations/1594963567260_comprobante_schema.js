@@ -7,7 +7,7 @@ class ComprobanteSchema extends Schema {
   up () {
     this.create('comprobantes', (table) => {
       table.increments()
-      table.integer('id_negocios', 80).unsigned().references('id').inTable('negocios')
+      table.integer('id_negocio', 80).unsigned().references('id').inTable('negocios')
       table.string('comprobante', 100).notNullable()
       table.timestamps()
     })

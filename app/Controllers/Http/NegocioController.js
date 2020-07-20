@@ -10,7 +10,11 @@ class NegocioController {
     const { id } = request.all();
     const negocio = await Database
       .from('negocios')
-      .where('id', id);
+      .where('negocios.id', id)
+      .leftJoin('categorias', 'negocios.id_categoria', 'categorias.id')
+      .leftJoin('horarios_negocios', 'negocios.id', 'horarios_negocios.id_negocio')
+      .leftJoin('fotos', 'negocios.id', 'fotos.id_negocio');
+
 
     try {
       return response.status(200).send({ status: 'ok', data: negocio });
@@ -85,9 +89,25 @@ class NegocioController {
       return response.status(400).send({status:'error', type:e, message:'Hubo un error'})
     }
 
-
   }
 
+  async updateNegocio({request, response}) {
+    const { nombre, ubicacion, id_categoria, nombreAdmin, email, password } = request.all();
+
+    const validation = await validate(request.all(), {
+      nombre: 'required',
+      ubicacion: 'required',
+      id_categoria: 'required',
+      nombreAdmin: 'required',
+      email: 'required|email',
+      password: 'required|min:5'
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
+    }
+
+  }
 
 }
 

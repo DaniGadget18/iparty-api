@@ -7,7 +7,7 @@ class HorariosNegocioSchema extends Schema {
   up () {
     this.create('horarios_negocios', (table) => {
       table.increments()
-      table.integer('id_negocios', 80).unsigned().references('id').inTable('negocios')
+      table.integer('id_negocio', 80).unsigned().references('id').inTable('negocios')
       table.string('lunes', 80)
       table.string('martes', 80)
       table.string('miercoles', 80)

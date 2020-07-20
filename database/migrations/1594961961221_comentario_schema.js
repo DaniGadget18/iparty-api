@@ -7,7 +7,7 @@ class ComentarioSchema extends Schema {
   up () {
     this.create('comentarios', (table) => {
       table.increments()
-      table.integer('id_negocios', 80).unsigned().references('id').inTable('negocios')
+      table.integer('id_negocio', 80).unsigned().references('id').inTable('negocios')
       table.integer('id_usuario').unsigned().references('id').inTable('users')
       table.string('comentario', 100).notNullable()
       table.integer('calificacion').notNullable()
