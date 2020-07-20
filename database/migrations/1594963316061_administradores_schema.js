@@ -8,8 +8,8 @@ class AdministradoresSchema extends Schema {
     this.create('administradores', (table) => {
       table.increments()
       table.integer('id_usuario').unsigned().references('id').inTable('users')
-      table.integer('id_negocios').unsigned().references('id').inTable('negocios')
-      table.integer('id_roles').unsigned().references('id').inTable('roles')
+      table.integer('id_negocio').unsigned().references('id').inTable('negocios')
+      table.integer('id_rol').unsigned().references('id').inTable('roles')
       table.timestamps()
     })
   }

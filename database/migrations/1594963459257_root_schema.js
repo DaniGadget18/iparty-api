@@ -7,8 +7,7 @@ class RootSchema extends Schema {
   up () {
     this.create('roots', (table) => {
       table.increments()
-      table.string('username', 80).notNullable().unique()
-      table.string('password', 60).notNullable()
+      table.integer('id_usuario').unsigned().references('id').inTable('users')
       table.timestamps()
     })
   }

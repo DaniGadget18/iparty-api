@@ -1,6 +1,7 @@
 'use strict'
 const { validate } = use("Validator");
 const User = use("App/Models/User");
+const Root = use("App/Models/Root");
 const Database = use("Database");
 const Hash = use('Hash')
 const Mail = use('Mail')
@@ -24,23 +25,26 @@ class SesionController {
             return response.status(400).send({ message: "No existe este usuario" });
         }
 
-
-        const isSame = Hash.verify(password, userFound.password);
-        if (!isSame) {
-            return response.status(400).send("Contraseña incorrecta");
+        if(userFound){
+          const isSame = Hash.verify(password, userFound.password);
+          if (!isSame) {
+              return response.status(400).send("Contraseña incorrecta");
+          }
         }
 
         try {
+
             const token = await auth.attempt(email, password);
-            const data = await Database
+            const allData = await Database
+                        .select('users.nombre', 'negocios.nombre as negocio', 'roles.rol', 'roots.id as root_id')
                         .table('users')
                         .where('users.email', email)
-                        .innerJoin('administradores', 'users.id', 'administradores.id_usuario');
-            if(typeof data.foo !== 'undefined'){
-              return response.status(200).send({ 'message': "ok", data: { token, email, data } });
-            }else{
-              return response.status(200).send({ 'message': "ok", data: { token, email } });
-            }
+                        .leftJoin('administradores', 'users.id', 'administradores.id_usuario')
+                        .leftJoin('negocios', 'administradores.id_negocio', 'negocios.id')
+                        .leftJoin('roles', 'administradores.id_rol', 'roles.id')
+                        .leftJoin('roots', 'users.id', 'roots.id_usuario');
+                        console.log(allData);
+            return response.status(200).send({ 'message': "ok", data: { token, email, allData} });
 
         } catch (error) {
             return response.status(400).send({ status: 'error', 'message': error });
@@ -95,14 +99,14 @@ class SesionController {
             fecha_nacimiento: fecha_nacimiento,
           })
 
-        console.log(nombre)
+
         const editar = await Database.from('users').where('email', email)
         return response.status(200).send({message:'usuario editado con exito', data:editar})
       }
 
       async correo ({ request, response }) {
         const { email} = request.all()
-        console.log(email)
+
 
         await Mail.raw('asda', (message) => {
             message.from(email)
