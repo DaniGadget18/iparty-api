@@ -17,18 +17,18 @@ class SesionController {
         });
 
         if (validation.fails()) {
-            return response.status(400).send({ message: validation.messages() });
+            return response.send({status:202, message: validation.messages() });
         }
 
         const userFound = await User.findBy("email", email);
         if (!userFound) {
-            return response.status(400).send({ message: "No existe este usuario" });
+            return response.send({status:400, message: "No existe este usuario" });
         }
 
         if(userFound){
           const isSame = Hash.verify(password, userFound.password);
           if (!isSame) {
-              return response.status(400).send("Contraseña incorrecta");
+              return response.send({status:201, message:"Contraseña incorrecta"});
           }
         }
 
@@ -44,10 +44,10 @@ class SesionController {
                         .leftJoin('roles', 'administradores.id_rol', 'roles.id')
                         .leftJoin('roots', 'users.id', 'roots.id_usuario');
                         console.log(allData);
-            return response.status(200).send({ 'message': "ok", data: { token, email, allData} });
+            return response.send({status:200, 'message': "ok", data: { token, email, allData} });
 
         } catch (error) {
-            return response.status(400).send({ status: 'error', 'message': error });
+            return response.send({ status: 202, message: error });
         }
     }
 
@@ -63,13 +63,13 @@ class SesionController {
         });
 
         if (validation.fails()) {
-            return response.status(400).send({ message: validation.messages() })
+            return response.send({status:202, message: validation.messages() })
         }
 
         const userFound = await User.findBy("email", email);
         if (userFound) {
             return response.send({
-                status: 'error', message: 'Ya existe un usuario creado con ese correo.'
+                status: 202, message: 'Ya existe un usuario creado con ese correo.'
             });
         }
 
