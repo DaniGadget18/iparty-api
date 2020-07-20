@@ -20,7 +20,7 @@ Route.get('/api', () => {
   return { greeting: 'Hello world in JSON' }
 })
 
-Route.post('login', 'SesionController.sesion');
-Route.post('signup', 'SesionController.registrar');
-Route.post('update', 'SesionController.editarusuario');
-Route.post('correo', 'SesionController.correo');
+Route.post('/login', 'SesionController.sesion');
+Route.post('/signup', 'SesionController.registrar');
+Route.post('/update', 'SesionController.editarusuario');
+Route.post('/correo', 'SesionController.correo');
