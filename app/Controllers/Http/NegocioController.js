@@ -3,6 +3,7 @@ const { validate } = use("Validator");
 const Database = use("Database");
 const User = use("App/Models/User");
 const comentario = use("App/Models/Mcomentario");
+const Negocio = use("App/Models/Mnegocio");
 const Hash = use('Hash');
 
 class NegocioController {
@@ -111,9 +112,12 @@ class NegocioController {
   }
 
   async top() {
-   
-    const userProfile = await comentario.profile().fetch()
-    return  userProfile
+
+    const negocios = await Negocio.find(15);
+    const negocio_comentario = await Negocio.query().with('comentarios').fetch();
+    //const comentarios = await comentario.profile().first();
+
+    return negocio_comentario;
 
   }
 

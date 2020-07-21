@@ -5,9 +5,12 @@ const Model = use('Model')
 const negocio = use("App/Models/Mnegocio");
 
 class Mcomentario extends Model {
-  profile() {
-        return 1
-      }
+  static get table() {
+    return 'comentarios';
+  }
+  negocio() {
+        return this.belongsTo('Mnegocio', 'id', 'id_negocio')
+  }
 }
 
 module.exports = Mcomentario
