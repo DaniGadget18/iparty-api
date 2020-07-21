@@ -35,5 +35,5 @@ Route.group(() => {
 Route.group( () => {
   Route.post('registrarNegocio', 'NegocioController.registrarNegocio');
   Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
-  Route.get('obtenerNegocio', 'NegocioController.obtenerNegocio');
+  Route.get('top', 'NegocioController.top');
 }).prefix('api/negocio/')

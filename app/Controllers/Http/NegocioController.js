@@ -2,6 +2,7 @@
 const { validate } = use("Validator");
 const Database = use("Database");
 const User = use("App/Models/User");
+const comentario = use("App/Models/Mcomentario");
 const Hash = use('Hash');
 
 class NegocioController {
@@ -106,6 +107,13 @@ class NegocioController {
     if (validation.fails()) {
       return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
     }
+
+  }
+
+  async top() {
+   
+    const userProfile = await comentario.profile().fetch()
+    return  userProfile
 
   }
 
