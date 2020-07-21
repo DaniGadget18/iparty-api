@@ -37,3 +37,42 @@ Route.group( () => {
   Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
   Route.get('obtenerNegocio', 'NegocioController.obtenerNegocio');
 }).prefix('api/negocio/')
+
+Route.group( () => {
+  Route.post('insertFotoNegocio', 'FotoController.insertFotoNegocio');
+  Route.post('deleteFotoNegocio', 'FotoController.deleteFotoNegocio');
+  Route.get('getFotoById', 'FotoController.getFotoById');
+  Route.get('getFotoByNegocioId', 'FotoController.getFotoByNegocioId');
+}).prefix('api/negocio/fotos/')
+
+Route.group( () => {
+  Route.post('updateEvento', 'EventoController.updateEvento');
+  Route.post('createEvento', 'EventoController.createEvento');
+  Route.get('getEventos', 'EventoController.getEventos');
+  Route.get('getEventoById', 'EventoController.getEventoById');
+  Route.get('getEventoByNegocioId', 'EventoController.getEventoByNegocioId');
+  Route.post('deleteEvento', 'EventoController.deleteEvento');
+}).prefix('api/negocio/eventos/')
+
+Route.group( () => {
+  Route.post('updateHorarioNegocio', 'HorariosNegocioController.updateHorarioNegocio');
+  Route.post('createHorarioNegocio', 'HorariosNegocioController.createHorarioNegocio');
+  Route.get('getHorarioByNegocioId', 'HorariosNegocioController.getHorarioByNegocioId');
+}).prefix('api/negocio/horarios/')
+
+Route.group( () => {
+  Route.post('updateMenuById', 'MenuController.updateMenuById');
+  Route.post('createMenu', 'MenuController.createMenu');
+  Route.get('getMenuByNegocioId', 'MenuController.getMenuByNegocioId');
+  Route.post('deleteMenuById', 'MenuController.deleteMenuById');
+}).prefix('api/negocio/menus/')
+
+Route.group( () => {
+  Route.get('getCategorias', 'CategoriaController.getCategorias');
+  Route.get('getCategoriaById', 'CategoriaController.getCategoriaById');
+  Route.post('createCategoria', 'CategoriaController.createCategoria');
+  Route.post('updateCategoria', 'CategoriaController.updateCategoria');
+  Route.post('deleteCategoria', 'CategoriaController.deleteCategoria');
+}).prefix('api/categoriasNegocios/')
+
+

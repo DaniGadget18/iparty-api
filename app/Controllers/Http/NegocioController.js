@@ -2,6 +2,12 @@
 const { validate } = use("Validator");
 const Database = use("Database");
 const User = use("App/Models/User");
+const Negocio = use("App/Models/Negocio");
+const Categoria = use("App/Models/Categoria");
+const Evento = use("App/Models/Eventos");
+const Menu = use("App/Models/Menu");
+const HorarioNegocio = use("App/Models/HorariosNegocio");
+const Foto = use("App/Models/Foto");
 const Hash = use('Hash');
 
 class NegocioController {
@@ -13,7 +19,8 @@ class NegocioController {
       .where('negocios.id', id)
       .leftJoin('categorias', 'negocios.id_categoria', 'categorias.id')
       .leftJoin('horarios_negocios', 'negocios.id', 'horarios_negocios.id_negocio')
-      .leftJoin('fotos', 'negocios.id', 'fotos.id_negocio');
+      .leftJoin('fotos', 'negocios.id', 'fotos.id_negocio')
+      .leftJoin('eventos', 'negocios.id', 'eventos.');
 
 
     try {
@@ -92,22 +99,47 @@ class NegocioController {
   }
 
   async updateNegocio({request, response}) {
-    const { nombre, ubicacion, id_categoria, nombreAdmin, email, password } = request.all();
+    const { id, nombre, ubicacion, id_categoria, nombreAdmin, email, password } = request.all();
 
     const validation = await validate(request.all(), {
+      id: 'required',
       nombre: 'required',
       ubicacion: 'required',
       id_categoria: 'required',
-      nombreAdmin: 'required',
-      email: 'required|email',
-      password: 'required|min:5'
+      informacion: 'required',
+      lat: 'required',
+      lng: 'required',
+      foto: 'required'
     });
 
     if (validation.fails()) {
       return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
     }
 
+    try {
+
+      const negocio = await Negocio
+      .query()
+      .where('id', request.body['id'])
+      .update({
+        nombre: nombre,
+        ubicacion: ubicacion,
+        id_categoria: id_categoria,
+        informacion: informacion,
+        lat: lat,
+        lng: lng,
+        foto: foto
+      })
+      const editada = await Negocio.query().where('id', request.body['id']).fetch()
+      return response.status(200).send({message:'Negocio editado con exito', data:editada})
+    } catch (error) {
+      return response.status(400).send({ message:'algo salio mal', error:error })
+    }
   }
+
+
+
+
 
 }
 
