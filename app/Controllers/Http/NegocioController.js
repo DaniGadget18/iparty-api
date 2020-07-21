@@ -2,12 +2,13 @@
 const { validate } = use("Validator");
 const Database = use("Database");
 const User = use("App/Models/User");
-const Negocio = use("App/Models/Negocio");
 const Categoria = use("App/Models/Categoria");
 const Evento = use("App/Models/Eventos");
 const Menu = use("App/Models/Menu");
 const HorarioNegocio = use("App/Models/HorariosNegocio");
 const Foto = use("App/Models/Foto");
+const comentario = use("App/Models/Mcomentario");
+const Negocio = use("App/Models/Mnegocio");
 const Hash = use('Hash');
 
 class NegocioController {
@@ -136,10 +137,15 @@ class NegocioController {
       return response.status(400).send({ message:'algo salio mal', error:error })
     }
   }
+  async top() {
 
+    const negocios = await Negocio.find(15);
+    const negocio_comentario = await Negocio.query().with('comentarios').fetch();
+    //const comentarios = await comentario.profile().first();
 
+    return negocio_comentario;
 
-
+  }
 
 }
 
