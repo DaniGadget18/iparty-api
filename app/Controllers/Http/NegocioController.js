@@ -49,7 +49,7 @@ class NegocioController {
     }
   }
 
-  async obtenerNegocioById({request, response}){
+  async obtenerNegocioByEmail({request, response}){
     const { email } = request.all();
 
 
@@ -62,13 +62,14 @@ class NegocioController {
     const id = resp[0]['administradores'][0]['id'];
 
     if (validation.fails()) {
-      return response.status(400).send({ status:'error', message: "Falta mandar el id"})
+      return response.status(400).send({ status:'error', message: "Falta mandar el email"})
     }
 
     try {
       const negocio = await Negocio.query().with('fotos').with('horarios').with('categoria_negocio').where('id',id).fetch();
       return response.status(200).send({ "status":'ok', data: negocio })
     } catch (error) {
+      console.log(error);
       return response.status(400).send({ status:'error', message: "Hubo un error", "error":error })
     }
   }

@@ -4,8 +4,11 @@
 const Model = use('Model')
 
 class Fotos extends Model {
-    negocio() {
-        return this.belongsTo('App/Models/Negocio', 'id', 'id_negocio')
+  static get table() {
+    return 'fotos';
+  }
+  negocio() {
+    return this.belongsTo('App/Models/Negocio', 'id', 'id_negocio')
   }
 }
 

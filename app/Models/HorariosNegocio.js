@@ -4,8 +4,11 @@
 const Model = use('Model')
 
 class horarios_negocios extends Model {
-    negocio() {
-        return this.belongsTo('App/Models/Negocio', 'id', 'id_negocio')
+  static get table() {
+    return 'horarios_negocios';
+  }
+  negocio() {
+    return this.belongsTo('App/Models/Negocio', 'id', 'id_negocio');
   }
 }
 
