@@ -2,13 +2,13 @@
 const { validate } = use("Validator");
 const Database = use("Database");
 const User = use("App/Models/User");
-const Categoria = use("App/Models/Categoria");
+const Categoria = use("App/Models/Categorias");
 const Evento = use("App/Models/Eventos");
-const Menu = use("App/Models/Menu");
+const Menu = use("App/Models/Menus");
 const HorarioNegocio = use("App/Models/HorariosNegocio");
 const Foto = use("App/Models/Foto");
 const comentario = use("App/Models/Mcomentario");
-const Negocio = use("App/Models/Mnegocio");
+const Negocio = use("App/Models/Negocios");
 const Hash = use('Hash');
 
 class NegocioController {
@@ -140,7 +140,7 @@ class NegocioController {
   async top() {
 
     const negocios = await Negocio.find(15);
-    const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').fetch();
+    const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
     //const comentarios = await comentario.profile().first();
 
     return negocio_comentario;
