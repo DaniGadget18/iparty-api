@@ -5,10 +5,10 @@ const Model = use('Model')
 
 class Negocios extends Model {
     comentarios () {
-        return this.hasMany( 'App/Models/Mcomentario', 'id', 'id_negocios')
+        return this.hasMany( 'App/Models/Mcomentario', 'id', 'id_negocio')
       }
       fotos () {
-        return this.hasMany( 'App/Models/fotos', 'id', 'id_negocio')
+        return this.hasMany( 'App/Models/Fotos', 'id', 'id_negocio')
       }
       horarios () {
         return this.hasMany( 'App/Models/HorariosNegocio', 'id', 'id_negocio')
