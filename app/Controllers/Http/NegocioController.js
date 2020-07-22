@@ -114,7 +114,7 @@ class NegocioController {
   async top() {
 
     const negocios = await Negocio.find(15);
-    const negocio_comentario = await Negocio.query().with('comentarios').fetch();
+    const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').fetch();
     //const comentarios = await comentario.profile().first();
 
     return negocio_comentario;

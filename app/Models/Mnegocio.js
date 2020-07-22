@@ -11,6 +11,9 @@ class Mnegocio extends Model {
   comentarios () {
     return this.hasMany( 'App/Models/Mcomentario', 'id', 'id_negocios')
   }
+  fotos () {
+    return this.hasMany( 'App/Models/fotos', 'id', 'id_negocio')
+  }
 }
 
 module.exports = Mnegocio
