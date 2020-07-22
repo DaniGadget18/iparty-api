@@ -1,14 +1,6 @@
 'use strict'
 const { validate } = use("Validator");
-const Database = use("Database");
-const User = use("App/Models/User");
-const Negocio = use("App/Models/Negocio");
-const Categoria = use("App/Models/Categoria");
-const Evento = use("App/Models/Eventos");
-const Menu = use("App/Models/Menu");
-const HorarioNegocio = use("App/Models/HorariosNegocio");
 const Foto = use("App/Models/Foto");
-const Hash = use('Hash');
 
 class FotoController {
 

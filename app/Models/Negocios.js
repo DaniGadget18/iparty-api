@@ -14,7 +14,7 @@ class Negocios extends Model {
     return this.hasMany( 'App/Models/Fotos', 'id', 'id_negocio')
   }
   horarios () {
-    return this.hasMany( 'App/Models/HorariosNegocio', 'id', 'id_negocios')
+    return this.hasMany( 'App/Models/HorariosNegocio', 'id', 'id_negocio')
   }
   menu () {
     return this.hasMany( 'App/Models/Menus', 'id', 'id_negocio')

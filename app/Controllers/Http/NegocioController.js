@@ -28,21 +28,23 @@ class NegocioController {
     if (validation.fails()){
       return response.status(400).send({ status:'error', message:'Falta un campo' })
     }
-    const negocio = await Negocio.create({
-      nombre
-    });
-    const usuario = await User.create({
-      email,
-      password,
-      nombre: nombreAdmin,
-      fecha_nacimiento
-    });
-    const administradores = await Administrador.create({
-      id_usuario: usuario.id,
-      id_negocio: negocio.id,
-      id_rol: 1
-    });
+
     try {
+      const negocio = await Negocio.create({
+        nombre
+      });
+      const usuario = await User.create({
+        email,
+        password,
+        nombre: nombreAdmin,
+        fecha_nacimiento
+      });
+      const administradores = await Administrador.create({
+        id_usuario: usuario.id,
+        id_negocio: negocio.id,
+        id_rol: 1
+      });
+
       return response.status(200).send({ status:'ok', message:'Negocio creado con exito', data:administradores })
     } catch (error) {
       return response.status(400).send({ status:'error', message:'Hubo un error', error: error })
@@ -75,8 +77,8 @@ class NegocioController {
   }
 
   async obtenerNegocios({response}) {
-    const negocios = await Negocio.all();
     try {
+      const negocios = await Negocio.all();
       console.log(negocios.length);
       return response.status(200).send({ status: 'ok', data: negocios });
     } catch (e) {
@@ -106,17 +108,16 @@ class NegocioController {
       return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
     }
 
-    const negocio = await  Negocio.query().where('id', id).update({
-      nombre: nombre,
-      ubicacion: ubicacion,
-      id_categorias: id_categorias,
-      informacion: informacion,
-      lat: lat,
-      lng: lng,
-      foto: foto
-    });
-
     try {
+      const negocio = await  Negocio.query().where('id', id).update({
+        nombre: nombre,
+        ubicacion: ubicacion,
+        id_categorias: id_categorias,
+        informacion: informacion,
+        lat: lat,
+        lng: lng,
+        foto: foto
+      });
       return response.status(200).send({message:'Negocio editado con exito', data: negocio})
     } catch (error) {
       return response.status(400).send({ message:'algo salio mal', error: error })
@@ -138,7 +139,7 @@ class NegocioController {
       sabado: 'required',
       domingo: 'required'
     });
- 
+
     const negociousuario = await User.query().with('administradores').where('email', email).fetch();
     const resp =  negociousuario.toJSON();
     const id = resp[0]['administradores'][0]['id'];
@@ -267,8 +268,8 @@ class NegocioController {
       return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
     }
   }
-
-
+  // Hacia arriba metodos sobre CRUD
+  // De aqui en adelante hacer solo consultas
   // Consultas
 
   async top({response}) {

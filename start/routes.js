@@ -37,7 +37,7 @@ Route.group( () => {
   // Negocios
   Route.post('registrarNegocio', 'NegocioController.registrarNegocioLucid');
   Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
-  Route.get('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
+  Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
 
   // Horarios negocio
