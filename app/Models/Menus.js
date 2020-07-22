@@ -5,8 +5,11 @@ const Model = use('Model')
 
 class Menus extends Model {
     negocio() {
-        return this.belongsTo('App/Models/Negocio', 'id', 'id_negocio')
+        return this.belongsTo('App/Models/Negocio', 'id_negocio', 'id')
   }
+  categoria() {
+    return this.belongsTo('App/Models/Categoriamenu', 'id_categoria', 'id')
+}
 }
 
 module.exports = Menus

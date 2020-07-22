@@ -137,13 +137,14 @@ class NegocioController {
       return response.status(400).send({ message:'algo salio mal', error:error })
     }
   }
-  async top() {
+  async top({response}) {
 
-    const negocios = await Negocio.find(15);
-    const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
+    const categorias =await Categoria.query().with('negocios.comentarios.usuario').with('negocios.fotos').with('negocios.menu.categoria').fetch();
+    //const negocios = await Negocio.find(15);
+    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
     //const comentarios = await comentario.profile().first();
 
-    return negocio_comentario;
+    return response.status(200).send({message:'Negocio editado con exito', data:categorias})
 
   }
 
