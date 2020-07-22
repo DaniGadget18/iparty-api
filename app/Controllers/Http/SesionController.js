@@ -86,17 +86,14 @@ class SesionController {
         //return response.status(200).send({message:'Has creado tu usuario con exito.'})
     }
     async editarusuario({request,response}){
-        const {username, nombre, email, foto, fecha_nacimiento} = request.all()
+        const { nombre, email, foto, fecha_nacimiento} = request.all()
 
         const user = await Database
           .table('users')
           .where('email',email)
           .update({
-            username: username,
-            email:email ,
             nombre: nombre,
             foto: foto,
-            fecha_nacimiento: fecha_nacimiento,
           })
 
 
@@ -115,6 +112,18 @@ class SesionController {
 
         return 'Registered successfully  stack'
       }
+
+      async usuario({ request,  response }) {
+        const { email } = request.all();
+        const userr =await User.findBy("email", email);
+        if (!userr) {
+            return response.send({status:400, message: "No existe este usuario" });
+        }
+        return response.status(200).send({message:'usuario encontrado', data:userr})
+
+
+       
+    }
 
 
 

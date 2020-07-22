@@ -31,7 +31,7 @@ class MenuController {
 
       const menu = await Menu
       .query()
-      .where('id', id)
+      .where('id', id) 
       .update({
         id_negocio : id_negocio,
         nombre: nombre,

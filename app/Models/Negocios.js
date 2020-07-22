@@ -16,6 +16,9 @@ class Negocios extends Model {
       menu () {
         return this.hasMany( 'App/Models/Menus', 'id', 'id_negocio')
       }
+      catagoria(){
+        return this.belongsTo('App/Models/Categorias', 'id_categoria', 'id')
+      }
       
 }
 

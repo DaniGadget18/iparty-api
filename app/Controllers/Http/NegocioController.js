@@ -137,7 +137,7 @@ class NegocioController {
       sabado: 'required',
       domingo: 'required'
     });
-
+ 
     const negociousuario = await User.query().with('administradores').where('email', email).fetch();
     const resp =  negociousuario.toJSON();
     const id = resp[0]['administradores'][0]['id'];
@@ -276,6 +276,7 @@ class NegocioController {
       .with('negocios.comentarios.usuario')
       .with('negocios.fotos')
       .with('negocios.menu.categoria')
+      .with('negocios.catagoria')
       .fetch();
     //const negocios = await Negocio.find(15);
     //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
