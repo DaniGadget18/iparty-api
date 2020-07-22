@@ -16,6 +16,7 @@ class Negocios extends Model {
       menu () {
         return this.hasMany( 'App/Models/Menus', 'id', 'id_negocio')
       }
+      
 }
 
 module.exports = Negocios
