@@ -137,9 +137,14 @@ class NegocioController {
       return response.status(400).send({ message:'algo salio mal', error:error })
     }
   }
+
   async top({response}) {
 
-    const categorias =await Categoria.query().with('negocios.comentarios.usuario').with('negocios.fotos').with('negocios.menu.categoria').fetch();
+    const categorias =await Categoria.query()
+    .with('negocios.comentarios.usuario')
+    .with('negocios.fotos')
+    .with('negocios.menu.categoria')
+    .fetch();
     //const negocios = await Negocio.find(15);
     //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
     //const comentarios = await comentario.profile().first();
@@ -160,7 +165,6 @@ class NegocioController {
   }
 
   async getTop5ByCategoria({request, response}) {
-
     const data = await Negocio
     .query()
     .where('id_categoria', request.body['id_categoria'])
@@ -168,7 +172,6 @@ class NegocioController {
     .limit(5)
     .fetch()
     return response.status(200).send({ status: 'ok', data: data });
-
   }
 
   async createComentario({request,response}){
