@@ -67,6 +67,11 @@ Route.group( () => {
   Route.get('getTop5ByCategoria', 'NegocioController.getTop5ByCategoria')
   Route.post('createComentario', 'NegocioController.createComentario')
   Route.get('buscador', 'NegocioController.getBusqueda')
+  Route.get('Bares', 'NegocioController.getBares')
+  Route.get('Antros', 'NegocioController.getAntros')
+  Route.get('Cantinas', 'NegocioController.getCantinas')
+  Route.get('Billares', 'NegocioController.getBillares')
+  Route.get('Clubs', 'NegocioController.getClubs')
 }).prefix('api/negocio/')
 
 
