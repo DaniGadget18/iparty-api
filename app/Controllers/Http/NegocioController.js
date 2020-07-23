@@ -353,9 +353,11 @@ class NegocioController {
 
     const data = await Negocio
       .query()
+      .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
       .with('menu')
+      .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
       .orderBy('popularidad', 'desc')
@@ -369,9 +371,11 @@ class NegocioController {
 
     const data = await Negocio
       .query()
+      .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
       .with('menu')
+      .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('id_categoria', request.body['id_categoria'])
@@ -431,6 +435,7 @@ class NegocioController {
     .with('fotos')
     .with('horarios')
     .with('menu')
+    .with('historias')
     .with('comentarios')
     .with('comentarios.usuario')
     .where('nombre', 'LIKE', '%'+request.body['data']+'%')

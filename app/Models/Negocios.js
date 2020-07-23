@@ -26,6 +26,9 @@ class Negocios extends Model {
     return this.belongsToMany('App/Models/User', 'id_negocio', 'id_usuario', 'id', 'id')
       .pivotTable('administradores');
   }
+  historias() {
+    return this.hasMany( 'App/Models/Historia', 'id', 'id_negocio')
+  }
 }
 
 module.exports = Negocios

@@ -43,6 +43,10 @@ class User extends Model {
     return this.belongsToMany('App/Models/Negocios', 'id_usuario', 'id_negocio', 'id', 'id')
       .pivotTable('administradores');
   }
+
+  historias() {
+    return this.hasMany( 'App/Models/Historia', 'id', 'id_usuario')
+  }
 }
 
 module.exports = User
