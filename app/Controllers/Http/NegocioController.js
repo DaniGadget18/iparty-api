@@ -351,7 +351,7 @@ class NegocioController {
     //const comentarios = await comentario.profile().first();
     return response.status(200).send({message:'Negocio editado con exito', data:categorias})
 
-      
+
     /*const categorias = await Categoria.query()
       .with('negocios.comentarios.usuario')
       .with('negocios.fotos')
@@ -370,9 +370,11 @@ class NegocioController {
 
     const data = await Negocio
       .query()
+      .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
       .with('menu')
+      .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
       .orderBy('popularidad', 'desc')
@@ -386,9 +388,11 @@ class NegocioController {
 
     const data = await Negocio
       .query()
+      .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
       .with('menu')
+      .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('id_categoria', request.body['id_categoria'])
@@ -448,6 +452,7 @@ class NegocioController {
     .with('fotos')
     .with('horarios')
     .with('menu')
+    .with('historias')
     .with('comentarios')
     .with('comentarios.usuario')
     .where('nombre', 'LIKE', '%'+request.body['data']+'%')
@@ -457,9 +462,89 @@ class NegocioController {
     return response.status(200).send({ status: 'ok', data: data });
   }
 
+  async getBares({response }) {
 
+    const data = await Negocio
+      .query()
+      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('horarios')
+      .with('menu')
+      .with('historias')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .where('categorias.categoria', 'LIKE', '%bar%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
+  }
+  async getAntros({response }) {
 
+    const data = await Negocio
+      .query()
+      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('horarios')
+      .with('menu')
+      .with('historias')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .where('categorias.categoria', 'LIKE', '%antro%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
+  }
 
+  async getCantinas({response }) {
+
+    const data = await Negocio
+      .query()
+      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('horarios')
+      .with('menu')
+      .with('historias')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .where('categorias.categoria', 'LIKE', '%cantina%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
+  }
+
+  async getBillar({response }) {
+
+    const data = await Negocio
+      .query()
+      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('horarios')
+      .with('menu')
+      .with('historias')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .where('categorias.categoria', 'LIKE', '%billar%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
+  }
+
+  async getClubs({response }) {
+
+    const data = await Negocio
+      .query()
+      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('horarios')
+      .with('menu')
+      .with('historias')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .where('categorias.categoria', 'LIKE', '%club%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
+  }
 
 }
 
