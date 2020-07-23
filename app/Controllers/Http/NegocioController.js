@@ -274,7 +274,7 @@ class NegocioController {
 
   async top({ response }) {
 
-      const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('categoria_negocio').with('menu.categoria').fetch();
+      const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('horarios').with('categoria_negocio').with('menu.categoria').fetch();
 
     const cat = await Categoria.all();
     const p = [];
@@ -314,10 +314,13 @@ class NegocioController {
 
 
 
+
     // We expect: Object { Hello="world" }
     //console.log(myObj, cat['id']); // Object{ Hello="World" } OK!
 
-  return myObj
+
+    var result = [];
+    return myObj
     /*const categorias = await Categoria.query()
       .with('negocios.comentarios.usuario')
       .with('negocios.fotos')
@@ -328,7 +331,7 @@ class NegocioController {
     //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
     //const comentarios = await comentario.profile().first();
 
-    return response.status(200).send({ message: 'HOLI', data: categorias })
+    return response.status(200).send({ message: 'HOLI', data: myObj })
 
   }
 
