@@ -68,4 +68,3 @@ Route.group( () => {
 }).prefix('api/negocio/')
 
 
-

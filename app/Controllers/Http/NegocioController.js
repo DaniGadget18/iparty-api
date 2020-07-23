@@ -15,8 +15,8 @@ const Hash = use('Hash');
 class NegocioController {
 
   // Metodos con Lucid
-  async registrarNegocioLucid({request, response}) {
-    const { nombre, email, password, fecha_nacimiento, nombreAdmin} = request.all();
+  async registrarNegocioLucid({ request, response }) {
+    const { nombre, email, password, fecha_nacimiento, nombreAdmin } = request.all();
     const validation = await validate(request.all(), {
       nombre: 'required',
       email: 'required | email',
@@ -25,8 +25,8 @@ class NegocioController {
       nombreAdmin: 'required'
     });
 
-    if (validation.fails()){
-      return response.status(400).send({ status:'error', message:'Falta un campo' })
+    if (validation.fails()) {
+      return response.status(400).send({ status: 'error', message: 'Falta un campo' })
     }
 
     try {
@@ -45,13 +45,13 @@ class NegocioController {
         id_rol: 1
       });
 
-      return response.status(200).send({ status:'ok', message:'Negocio creado con exito', data:administradores })
+      return response.status(200).send({ status: 'ok', message: 'Negocio creado con exito', data: administradores })
     } catch (error) {
-      return response.status(400).send({ status:'error', message:'Hubo un error', error: error })
+      return response.status(400).send({ status: 'error', message: 'Hubo un error', error: error })
     }
   }
 
-  async obtenerNegocioByEmail({request, response}){
+  async obtenerNegocioByEmail({ request, response }) {
     const { email } = request.all();
 
 
@@ -60,23 +60,23 @@ class NegocioController {
     });
 
     if (validation.fails()) {
-      return response.status(400).send({ status:'error', message: "Falta mandar el email"})
+      return response.status(400).send({ status: 'error', message: "Falta mandar el email" })
     }
 
     try {
       const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp =  negociousuario.toJSON();
+      const resp = negociousuario.toJSON();
       const id = resp[0]['administradores'][0]['id'];
 
-      const negocio = await Negocio.query().with('fotos').with('horarios').with('categoria_negocio').where('id',id).fetch();
-      return response.status(200).send({ "status":'ok', data: negocio })
+      const negocio = await Negocio.query().with('fotos').with('horarios').with('categoria_negocio').where('id', id).fetch();
+      return response.status(200).send({ "status": 'ok', data: negocio })
     } catch (error) {
       console.log(error);
-      return response.status(400).send({ status:'error', message: "Hubo un error", "error":error })
+      return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error })
     }
   }
 
-  async obtenerNegocios({response}) {
+  async obtenerNegocios({ response }) {
     try {
       const negocios = await Negocio.all();
       console.log(negocios.length);
@@ -86,7 +86,7 @@ class NegocioController {
     }
   }
 
-  async obtenerNegocioByID({request, response}) {
+  async obtenerNegocioByID({ request, response }) {
     const { id } = request.all();
 
     const validation = await validate(request.all(), {
@@ -94,21 +94,21 @@ class NegocioController {
     });
 
     if (validation.fails()) {
-      return response.status(400).send({ status:'error', message: "Falta mandar el id"})
+      return response.status(400).send({ status: 'error', message: "Falta mandar el id" })
     }
 
     try {
 
-      const negocio = await Negocio.query().with('categoria_negocio').with('usuario').where('id',id).fetch();
-      return response.status(200).send({ "status":'ok', data: negocio })
+      const negocio = await Negocio.query().with('categoria_negocio').with('usuario').where('id', id).fetch();
+      return response.status(200).send({ "status": 'ok', data: negocio })
     } catch (error) {
       console.log(error);
-      return response.status(400).send({ status:'error', message: "Hubo un error", "error":error.message })
+      return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error.message })
     }
   }
 
 
-  async updateNegocio({request, response}) {
+  async updateNegocio({ request, response }) {
     const { email, nombre, ubicacion, id_categorias, informacion, lat, lng, foto } = request.all();
 
     const validation = await validate(request.all(), {
@@ -122,15 +122,15 @@ class NegocioController {
     });
 
     if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
+      return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
     }
 
     try {
       const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp =  negociousuario.toJSON();
+      const resp = negociousuario.toJSON();
       const id = resp[0]['administradores'][0]['id'];
 
-      const negocio = await  Negocio.query().where('id', id).update({
+      const negocio = await Negocio.query().where('id', id).update({
         nombre: nombre,
         ubicacion: ubicacion,
         id_categorias: id_categorias,
@@ -139,19 +139,19 @@ class NegocioController {
         lng: lng,
         foto: foto
       });
-      return response.status(200).send({message:'Negocio editado con exito', data: negocio})
+      return response.status(200).send({ message: 'Negocio editado con exito', data: negocio })
     } catch (error) {
-      return response.status(400).send({ message:'algo salio mal', error: error })
+      return response.status(400).send({ message: 'algo salio mal', error: error })
     }
   }
 
   // Horarios negocio
 
-  async updateHorarioNegocio({request, response}) {
+  async updateHorarioNegocio({ request, response }) {
     const { email, lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
 
     const validation = await validate(request.all(), {
-      email : 'required | email',
+      email: 'required | email',
       lunes: 'required',
       martes: 'required',
       miercoles: 'required',
@@ -163,19 +163,19 @@ class NegocioController {
 
 
     if (validation.fails()) {
-      return response.status(400).send({ status:'error', message: validation.messages(), error:"Falta algun campo" })
+      return response.status(400).send({ status: 'error', message: validation.messages(), error: "Falta algun campo" })
     }
 
     try {
       const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp =  negociousuario.toJSON();
+      const resp = negociousuario.toJSON();
       const id = resp[0]['administradores'][0]['id'];
 
       const negocio_horario = await Negocio.query().withCount('horarios').where('id', id).fetch();
       const data = negocio_horario.toJSON();
       const count = data[0]['__meta__']['horarios_count'];
 
-      if (count == 0){
+      if (count == 0) {
         const horario = new HorarioNegocio();
         horario.id_negocio = id,
           horario.lunes = lunes,
@@ -200,17 +200,17 @@ class NegocioController {
             domingo: domingo
           });
       }
-      return response.status(200).send({status: 'ok', message:'Informacion editada con exito'})
+      return response.status(200).send({ status: 'ok', message: 'Informacion editada con exito' })
     } catch (error) {
       console.log(error);
-      return response.status(400).send({ status:'error', message:'algo salio mal', error:error.message})
+      return response.status(400).send({ status: 'error', message: 'algo salio mal', error: error.message })
     }
   }
 
 
   // Menu
-  async updateMenuByNegocio({request, response}) {
-    const {id, email, id_categoria, nombre, informacion} = request.all();
+  async updateMenuByNegocio({ request, response }) {
+    const { id, email, id_categoria, nombre, informacion } = request.all();
 
     const validation = await validate(request.all(), {
       id: 'required',
@@ -221,31 +221,31 @@ class NegocioController {
     });
 
     const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp =  negociousuario.toJSON();
+    const resp = negociousuario.toJSON();
     const id_negocio = resp[0]['administradores'][0]['id'];
 
     if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
+      return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
     }
 
     try {
       const menu = await Menu
-      .query()
-      .where('id', id)
+        .query()
+        .where('id', id)
         .where('id_negocio', id_negocio)
-      .update({
-        nombre: nombre,
-        informacion: informacion,
-        id_categoria: id_categoria
-      })
+        .update({
+          nombre: nombre,
+          informacion: informacion,
+          id_categoria: id_categoria
+        })
       const editada = await Menu.query().where('id', id).fetch()
-      return response.status(200).send({message:'Informacion editada con exito', data:editada})
+      return response.status(200).send({ message: 'Informacion editada con exito', data: editada })
     } catch (error) {
-      return response.status(400).send({ message:'algo salio mal', error:error })
+      return response.status(400).send({ message: 'algo salio mal', error: error })
     }
   }
 
-  async getMenuByNegocioId({request, response}){
+  async getMenuByNegocioId({ request, response }) {
     const { email } = request.all();
 
     const validation = await validate(request.all(), {
@@ -253,42 +253,86 @@ class NegocioController {
     });
 
     if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error:"Falta el email" })
+      return response.status(400).send({ message: validation.messages(), error: "Falta el email" })
     }
 
     const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp =  negociousuario.toJSON();
+    const resp = negociousuario.toJSON();
     const id_negocio = resp[0]['administradores'][0]['id'];
 
     try {
       const menu = await Menu.query().where('id_negocio', id_negocio).fetch();
 
-      return response.status(200).send({data:menu})
+      return response.status(200).send({ data: menu })
     } catch (error) {
-      return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
+      return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
     }
   }
   // Hacia arriba metodos sobre CRUD
   // De aqui en adelante hacer solo consultas
   // Consultas
 
-  async top({response}) {
+  async top({ response }) {
+    
+      const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('categoria_negocio').with('menu.categoria').fetch();
+      
+    const cat = await Categoria.all();
+    const p = [];
+    
+   
+    var aux;
+    var auxa;
+    var myObj = {};
 
-    const categorias =await Categoria.query()
+    for (let i in cat.rows) {
+      const pp = [];
+      p.push(cat.rows[i]['categoria'])
+      aux = cat.rows[i]['categoria'];
+      auxa = cat.rows[i]['id'];
+      console.log("´k",auxa);
+
+
+      for (let i in neg.rows) {
+        console.log("ASD", neg.rows[i]['id_categoria'], auxa)
+        if(neg.rows[i]['id_categoria']==auxa){
+          console.log("entro", neg.rows[i]['id_categoria'], auxa)
+          pp.push(neg.rows[i])
+        }
+        
+        
+      }
+      myObj[aux]=pp;
+      
+
+
+
+      console.log(aux) // you should be able to have access to name now
+    }
+    
+
+    
+
+    
+
+    // We expect: Object { Hello="world" }
+    //console.log(myObj, cat['id']); // Object{ Hello="World" } OK!
+    
+  return myObj
+    /*const categorias = await Categoria.query()
       .with('negocios.comentarios.usuario')
       .with('negocios.fotos')
       .with('negocios.menu.categoria')
       .with('negocios.categoria_negocio')
-      .fetch();
+      .fetch();*/
     //const negocios = await Negocio.find(15);
     //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
     //const comentarios = await comentario.profile().first();
 
-    return response.status(200).send({message:'HOLI', data:categorias})
+    return response.status(200).send({ message: 'HOLI', data: categorias })
 
   }
 
-  async getTop5({response}) {
+  async getTop5({ response }) {
 
     const data = await Negocio
       .query()
@@ -304,7 +348,7 @@ class NegocioController {
 
   }
 
-  async getTop5ByCategoria({request, response}) {
+  async getTop5ByCategoria({ request, response }) {
     const data = await Negocio
       .query()
       .with('fotos')
@@ -319,7 +363,7 @@ class NegocioController {
     return response.status(200).send({ status: 'ok', data: data });
   }
 
-  async createComentario({request,response}){
+  async createComentario({ request, response }) {
     const { id_negocio, id_usuario, comentario, calificacion } = request.all();
 
     const validation = await validate(request.all(), {
@@ -330,7 +374,7 @@ class NegocioController {
     });
 
     if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
+      return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
     }
     try {
       //guargar comentario
@@ -351,11 +395,11 @@ class NegocioController {
         .query()
         .where('id', id_negocio)
         .update({
-          popularidad : NuevaPopularidad,
+          popularidad: NuevaPopularidad,
         })
-      return response.status(200).send({message:'Comentatio guardado con exito', data:comentari})
+      return response.status(200).send({ message: 'Comentatio guardado con exito', data: comentari })
     } catch (error) {
-      return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
+      return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
     }
 
   }
