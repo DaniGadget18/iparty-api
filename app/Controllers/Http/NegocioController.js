@@ -353,6 +353,7 @@ class NegocioController {
 
     const data = await Negocio
       .query()
+      .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
       .with('menu')
@@ -370,6 +371,7 @@ class NegocioController {
 
     const data = await Negocio
       .query()
+      .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
       .with('menu')
