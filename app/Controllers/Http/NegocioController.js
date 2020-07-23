@@ -334,7 +334,7 @@ class NegocioController {
     //const comentarios = await comentario.profile().first();
     return response.status(200).send({message:'Negocio editado con exito', data:categorias})
 
-      
+
     /*const categorias = await Categoria.query()
       .with('negocios.comentarios.usuario')
       .with('negocios.fotos')
