@@ -334,7 +334,7 @@ class NegocioController {
     //const comentarios = await comentario.profile().first();
     return response.status(200).send({message:'Negocio editado con exito', data:categorias})
 
-      
+
     /*const categorias = await Categoria.query()
       .with('negocios.comentarios.usuario')
       .with('negocios.fotos')
@@ -356,6 +356,7 @@ class NegocioController {
       .with('fotos')
       .with('horarios')
       .with('menu')
+      .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
       .orderBy('popularidad', 'desc')
@@ -372,6 +373,7 @@ class NegocioController {
       .with('fotos')
       .with('horarios')
       .with('menu')
+      .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('id_categoria', request.body['id_categoria'])
@@ -431,6 +433,7 @@ class NegocioController {
     .with('fotos')
     .with('horarios')
     .with('menu')
+    .with('historias')
     .with('comentarios')
     .with('comentarios.usuario')
     .where('nombre', 'LIKE', '%'+request.body['data']+'%')
