@@ -273,13 +273,13 @@ class NegocioController {
   // Consultas
 
   async top({ response }) {
-    
+
       const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('categoria_negocio').with('menu.categoria').fetch();
-      
+
     const cat = await Categoria.all();
     const p = [];
-    
-   
+
+
     var aux;
     var auxa;
     var myObj = {};
@@ -298,25 +298,25 @@ class NegocioController {
           console.log("entro", neg.rows[i]['id_categoria'], auxa)
           pp.push(neg.rows[i])
         }
-        
-        
+
+
       }
       myObj[aux]=pp;
-      
+
 
 
 
       console.log(aux) // you should be able to have access to name now
     }
-    
 
-    
 
-    
+
+
+
 
     // We expect: Object { Hello="world" }
     //console.log(myObj, cat['id']); // Object{ Hello="World" } OK!
-    
+
   return myObj
     /*const categorias = await Categoria.query()
       .with('negocios.comentarios.usuario')
@@ -349,6 +349,7 @@ class NegocioController {
   }
 
   async getTop5ByCategoria({ request, response }) {
+
     const data = await Negocio
       .query()
       .with('fotos')
@@ -402,6 +403,24 @@ class NegocioController {
       return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
     }
 
+  }
+
+  async getBusqueda({ request, response }) {
+
+    const data = await Negocio
+    .query()
+    .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+    .with('categoria_negocio')
+    .with('fotos')
+    .with('horarios')
+    .with('menu')
+    .with('comentarios')
+    .with('comentarios.usuario')
+    .where('nombre', 'LIKE', '%'+request.body['data']+'%')
+    .orWhere('ubicacion', 'LIKE', '%'+request.body['data']+'%')
+    .orWhere('categorias.categoria', 'LIKE', '%'+request.body['data']+'%')
+    .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
   }
 
 
