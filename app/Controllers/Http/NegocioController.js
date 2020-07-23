@@ -8,7 +8,7 @@ const Menu = use("App/Models/Menus");
 const HorarioNegocio = use("App/Models/HorariosNegocio");
 const Foto = use("App/Models/Fotos");
 const Administrador = use("App/Models/Administradores");
-const comentario = use("App/Models/Comentario");
+const Comentario = use("App/Models/Comentario");
 const Negocio = use("App/Models/Negocios");
 const Hash = use('Hash');
 
