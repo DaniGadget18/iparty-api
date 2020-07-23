@@ -71,6 +71,7 @@ Route.group( () => {
   Route.get('Antros', 'NegocioController.getAntros')
   Route.get('Cantinas', 'NegocioController.getCantinas')
   Route.get('Billares', 'NegocioController.getBillares')
+  Route.get('Clubs', 'NegocioController.getClubs')
 }).prefix('api/negocio/')
 
 

@@ -512,9 +512,22 @@ class NegocioController {
     return response.status(200).send({ status: 'ok', data: data });
   }
 
+  async getClubs({response }) {
 
-
-
+    const data = await Negocio
+      .query()
+      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('horarios')
+      .with('menu')
+      .with('historias')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .where('categorias.categoria', 'LIKE', '%club%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
+  }
 
 }
 
