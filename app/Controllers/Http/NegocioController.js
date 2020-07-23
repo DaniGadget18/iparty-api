@@ -272,9 +272,8 @@ class NegocioController {
   // De aqui en adelante hacer solo consultas
   // Consultas
 
-  async top({ response }) {
-
-      const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('horarios').with('categoria_negocio').with('menu.categoria').fetch();
+  async cat(){
+    const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('horarios').with('categoria_negocio').with('menu.categoria').fetch();
 
     const cat = await Categoria.all();
     const p = [];
@@ -321,6 +320,21 @@ class NegocioController {
 
     var result = [];
     return myObj
+
+  }
+
+  async top({ response }) {
+    const categorias =await Categoria.query()
+    .with('negocios.comentarios.usuario')
+    .with('negocios.fotos')
+    .with('negocios.menu.categoria')
+    .fetch();
+    //const negocios = await Negocio.find(15);
+    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
+    //const comentarios = await comentario.profile().first();
+    return response.status(200).send({message:'Negocio editado con exito', data:categorias})
+
+      
     /*const categorias = await Categoria.query()
       .with('negocios.comentarios.usuario')
       .with('negocios.fotos')
