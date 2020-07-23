@@ -1,8 +1,33 @@
 'use strict'
 const { validate } = use("Validator");
-const Foto = use("App/Models/Foto");
+const Foto = use("App/Models/Fotos");
+const PublitioAPI = use('publitio_js_sdk').default
+const  { readFileSync } = use('fs');
 
 class FotoController {
+
+
+  async obtenerfotosApi() {
+
+    this.publitio.call('/files/list', 'GET', { offset: '0', limit: '10'})
+      .then(response => { console.log(response) })
+      .catch(error => { console.log(error) })
+  }
+
+  async subirfoto ({ request, response }) {
+    const image  = request.file();
+    console.log(image);
+    const publitio = new PublitioAPI('QzWG6xZdAcL9Z9igcGWA', 'SxtaWjneTr6QeN8Bhs1yB7NmMtSZWxsi');
+    const archivo = readFileSync(image);
+    console.log(archivo);
+    this.publitio.uploadFile(file, 'archivo').then( (data) => {
+      console.log(data);
+    }).catch( (error) => {
+      console.log(error);
+    } )
+
+  }
+
 
   async insertFotoNegocio({request, response}) {
     const { id_negocio , foto } = request.all();

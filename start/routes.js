@@ -45,6 +45,8 @@ Route.group( () => {
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
 
   // Fotos negocios
+  Route.get('apifotos', 'FotoController.obtenerfotosApi');
+  Route.post('subirfoto', 'FotoController.subirfoto');
   Route.post('insertFotoNegocio', 'FotoController.insertFotoNegocio');
   Route.post('deleteFotoNegocio', 'FotoController.deleteFotoNegocio');
   Route.get('getFotoById', 'FotoController.getFotoById');
