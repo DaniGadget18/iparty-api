@@ -14,13 +14,17 @@ class Negocios extends Model {
     return this.hasMany( 'App/Models/Fotos', 'id', 'id_negocio')
   }
   horarios () {
-    return this.hasMany( 'App/Models/HorariosNegocio', 'id', 'id_negocios')
+    return this.hasMany( 'App/Models/HorariosNegocio', 'id', 'id_negocio')
   }
   menu () {
     return this.hasMany( 'App/Models/Menus', 'id', 'id_negocio')
   }
   categoria_negocio() {
     return this.belongsTo('App/Models/Categorias', 'id_categoria', 'id');
+  }
+  usuario() {
+    return this.belongsToMany('App/Models/User', 'id_negocio', 'id_usuario', 'id', 'id')
+      .pivotTable('administradores');
   }
 }
 

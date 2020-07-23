@@ -28,21 +28,23 @@ class NegocioController {
     if (validation.fails()){
       return response.status(400).send({ status:'error', message:'Falta un campo' })
     }
-    const negocio = await Negocio.create({
-      nombre
-    });
-    const usuario = await User.create({
-      email,
-      password,
-      nombre: nombreAdmin,
-      fecha_nacimiento
-    });
-    const administradores = await Administrador.create({
-      id_usuario: usuario.id,
-      id_negocio: negocio.id,
-      id_rol: 1
-    });
+
     try {
+      const negocio = await Negocio.create({
+        nombre
+      });
+      const usuario = await User.create({
+        email,
+        password,
+        nombre: nombreAdmin,
+        fecha_nacimiento
+      });
+      const administradores = await Administrador.create({
+        id_usuario: usuario.id,
+        id_negocio: negocio.id,
+        id_rol: 1
+      });
+
       return response.status(200).send({ status:'ok', message:'Negocio creado con exito', data:administradores })
     } catch (error) {
       return response.status(400).send({ status:'error', message:'Hubo un error', error: error })
@@ -57,15 +59,15 @@ class NegocioController {
       email: 'required | email'
     });
 
-    const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp =  negociousuario.toJSON();
-    const id = resp[0]['administradores'][0]['id'];
-
     if (validation.fails()) {
       return response.status(400).send({ status:'error', message: "Falta mandar el email"})
     }
 
     try {
+      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
+      const resp =  negociousuario.toJSON();
+      const id = resp[0]['administradores'][0]['id'];
+
       const negocio = await Negocio.query().with('fotos').with('horarios').with('categoria_negocio').where('id',id).fetch();
       return response.status(200).send({ "status":'ok', data: negocio })
     } catch (error) {
@@ -75,12 +77,33 @@ class NegocioController {
   }
 
   async obtenerNegocios({response}) {
-    const negocios = await Negocio.all();
     try {
+      const negocios = await Negocio.all();
       console.log(negocios.length);
       return response.status(200).send({ status: 'ok', data: negocios });
     } catch (e) {
       return response.status(400).send({ status: 'ok', message: 'Hubo un error' });
+    }
+  }
+
+  async obtenerNegocioByID({request, response}) {
+    const { id } = request.all();
+
+    const validation = await validate(request.all(), {
+      id: 'required'
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: "Falta mandar el id"})
+    }
+
+    try {
+
+      const negocio = await Negocio.query().with('categoria_negocio').with('usuario').where('id',id).fetch();
+      return response.status(200).send({ "status":'ok', data: negocio })
+    } catch (error) {
+      console.log(error);
+      return response.status(400).send({ status:'error', message: "Hubo un error", "error":error.message })
     }
   }
 
@@ -98,25 +121,24 @@ class NegocioController {
       lng: 'required'
     });
 
-    const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp =  negociousuario.toJSON();
-    const id = resp[0]['administradores'][0]['id'];
-
     if (validation.fails()) {
       return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
     }
 
-    const negocio = await  Negocio.query().where('id', id).update({
-      nombre: nombre,
-      ubicacion: ubicacion,
-      id_categorias: id_categorias,
-      informacion: informacion,
-      lat: lat,
-      lng: lng,
-      foto: foto
-    });
-
     try {
+      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
+      const resp =  negociousuario.toJSON();
+      const id = resp[0]['administradores'][0]['id'];
+
+      const negocio = await  Negocio.query().where('id', id).update({
+        nombre: nombre,
+        ubicacion: ubicacion,
+        id_categorias: id_categorias,
+        informacion: informacion,
+        lat: lat,
+        lng: lng,
+        foto: foto
+      });
       return response.status(200).send({message:'Negocio editado con exito', data: negocio})
     } catch (error) {
       return response.status(400).send({ message:'algo salio mal', error: error })
@@ -125,47 +147,8 @@ class NegocioController {
 
   // Horarios negocio
 
-  async createHorarioNegocio({request, response}) {
-    const { email , lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
-
-    const validation = await validate(request.all(), {
-      email : 'required | email',
-      lunes: 'required',
-      martes: 'required',
-      miercoles: 'required',
-      jueves: 'required',
-      viernes: 'required',
-      sabado: 'required',
-      domingo: 'required'
-    });
- 
-    const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp =  negociousuario.toJSON();
-    const id = resp[0]['administradores'][0]['id'];
-
-    if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
-    }
-
-    try {
-      const horario = new HorarioNegocio();
-        horario.id_negocio = id,
-        horario.lunes = lunes,
-        horario.martes = martes,
-        horario.miercoles = miercoles,
-        horario.jueves = jueves,
-        horario.viernes = viernes,
-        horario.sabado = sabado,
-        horario.domingo = domingo
-      await horario.save();
-      return response.status(200).send({message:'Horario creado con exito', data:horario})
-    } catch (error) {
-      return response.status(400).send({ message:'algo salio mal', error:error })
-    }
-  }
-
   async updateHorarioNegocio({request, response}) {
-    const { email , lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
+    const { email, lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
 
     const validation = await validate(request.all(), {
       email : 'required | email',
@@ -178,31 +161,49 @@ class NegocioController {
       domingo: 'required'
     });
 
-    const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp =  negociousuario.toJSON();
-    const id = resp[0]['administradores'][0]['id'];
 
     if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
+      return response.status(400).send({ status:'error', message: validation.messages(), error:"Falta algun campo" })
     }
 
     try {
+      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
+      const resp =  negociousuario.toJSON();
+      const id = resp[0]['administradores'][0]['id'];
 
-      const horario = await HorarioNegocio
-        .query()
-        .where('id_negocio', id)
-        .update({
-          lunes: lunes,
-          martes: martes,
-          miercoles: miercoles,
-          jueves: jueves,
-          viernes: viernes,
-          sabado: sabado,
-          domingo: domingo
-        });
-      return response.status(200).send({message:'Informacion editada con exito', data:editada})
+      const negocio_horario = await Negocio.query().withCount('horarios').where('id', id).fetch();
+      const data = negocio_horario.toJSON();
+      const count = data[0]['__meta__']['horarios_count'];
+
+      if (count == 0){
+        const horario = new HorarioNegocio();
+        horario.id_negocio = id,
+          horario.lunes = lunes,
+          horario.martes = martes,
+          horario.miercoles = miercoles,
+          horario.jueves = jueves,
+          horario.viernes = viernes,
+          horario.sabado = sabado,
+          horario.domingo = domingo
+        await horario.save();
+      } else {
+        const horario = await HorarioNegocio
+          .query()
+          .where('id_negocio', id)
+          .update({
+            lunes: lunes,
+            martes: martes,
+            miercoles: miercoles,
+            jueves: jueves,
+            viernes: viernes,
+            sabado: sabado,
+            domingo: domingo
+          });
+      }
+      return response.status(200).send({status: 'ok', message:'Informacion editada con exito'})
     } catch (error) {
-      return response.status(400).send({ message:'algo salio mal', error:error })
+      console.log(error);
+      return response.status(400).send({ status:'error', message:'algo salio mal', error:error.message})
     }
   }
 
@@ -267,8 +268,8 @@ class NegocioController {
       return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
     }
   }
-
-
+  // Hacia arriba metodos sobre CRUD
+  // De aqui en adelante hacer solo consultas
   // Consultas
 
   async top({response}) {
