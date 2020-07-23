@@ -8,7 +8,7 @@ class Historia extends Model {
     return this.belongsTo('App/Models/Negocio', 'id', 'id_negocio')
   }
   usuario() {
-    return this.belongsTo('App/Models/User', 'id', 'id_usuario')
+    return this.belongsTo('App/Models/User', 'id_usuario', 'id')
   }
 
 }
