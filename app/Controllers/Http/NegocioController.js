@@ -272,7 +272,7 @@ class NegocioController {
   // De aqui en adelante hacer solo consultas
   // Consultas
 
-  async cat(){
+  async cat( {response}){
     const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('horarios').with('categoria_negocio').with('menu.categoria').fetch();
 
     const cat = await Categoria.all();
@@ -282,44 +282,61 @@ class NegocioController {
     var aux;
     var auxa;
     var myObj = {};
+    var result = [];
 
     for (let i in cat.rows) {
       const pp = [];
       p.push(cat.rows[i]['categoria'])
       aux = cat.rows[i]['categoria'];
       auxa = cat.rows[i]['id'];
-      console.log("´k",auxa);
 
 
       for (let i in neg.rows) {
-        console.log("ASD", neg.rows[i]['id_categoria'], auxa)
         if(neg.rows[i]['id_categoria']==auxa){
-          console.log("entro", neg.rows[i]['id_categoria'], auxa)
           pp.push(neg.rows[i])
         }
 
 
       }
       myObj[aux]=pp;
-
-
-
-
-      console.log(aux) // you should be able to have access to name now
+       
+      
     }
+    result.push(JSON.parse(JSON.stringify(myObj)));
+    var asd={};
+    
+    
+
+    for (let i in cat.rows) {
+      const ppt = [];
+      p.push(cat.rows[i]['categoria'])
+      aux = cat.rows[i]['categoria'];
+      auxa = cat.rows[i]['id'];
+
+      
+      for (let i in result) {
+       
+        
+        var obj = JSON.parse(JSON.stringify(result), function (key, value) {
+          if (key ==aux ) {
+            console.log("yeajjs", key)
+            asd[aux]=JSON.parse(JSON.stringify(result.rows[0]))
+          } else {
+            return value;
+          }
+        });
+        
 
 
-
-
-
-
-
-    // We expect: Object { Hello="world" }
-    //console.log(myObj, cat['id']); // Object{ Hello="World" } OK!
-
-
-    var result = [];
-    return myObj
+      }
+      
+       
+      
+    }
+    
+ 
+    
+    return response.status(200).send({message:'Negocio editado con exito', data:obj})
 
   }
 
@@ -356,8 +373,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .orderBy('popularidad', 'desc')
@@ -453,8 +470,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('categorias.categoria', 'LIKE', '%bar%')
@@ -468,8 +485,8 @@ class NegocioController {
       .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
       .with('categoria_negocio')
       .with('fotos')
-      .with('horarios')
-      .with('menu')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
@@ -486,8 +503,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('categorias.categoria', 'LIKE', '%cantina%')
@@ -503,8 +520,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('categorias.categoria', 'LIKE', '%billar%')
@@ -520,8 +537,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('categorias.categoria', 'LIKE', '%club%')
