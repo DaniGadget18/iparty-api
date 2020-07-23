@@ -39,10 +39,10 @@ Route.group( () => {
   Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
+  Route.post('obtenerNegociobyid', 'NegocioController.obtenerNegocioByID');
 
   // Horarios negocio
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
-  Route.post('createHorarioNegocio', 'NegocioController.createHorarioNegocio');
 
   // Fotos negocios
   Route.post('insertFotoNegocio', 'FotoController.insertFotoNegocio');

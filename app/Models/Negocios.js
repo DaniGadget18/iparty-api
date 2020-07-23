@@ -22,6 +22,10 @@ class Negocios extends Model {
   categoria_negocio() {
     return this.belongsTo('App/Models/Categorias', 'id_categoria', 'id');
   }
+  usuario() {
+    return this.belongsToMany('App/Models/User', 'id_negocio', 'id_usuario', 'id', 'id')
+      .pivotTable('administradores');
+  }
 }
 
 module.exports = Negocios
