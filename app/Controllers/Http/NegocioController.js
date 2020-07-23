@@ -283,7 +283,7 @@ class NegocioController {
     //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
     //const comentarios = await comentario.profile().first();
 
-    return response.status(200).send({message:'Negocio editado con exito', data:categorias})
+    return response.status(200).send({message:'HOLI', data:categorias})
 
   }
 
