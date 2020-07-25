@@ -147,29 +147,11 @@ class NegocioController {
   async updateHorarioNegocio({ request, response }) {
     const { email, lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
 
-    const validation = await validate(request.all(), {
-      email: 'required | email',
-      lunes: 'required',
-      martes: 'required',
-      miercoles: 'required',
-      jueves: 'required',
-      viernes: 'required',
-      sabado: 'required',
-      domingo: 'required'
-    });
-
-
-    if (validation.fails()) {
-      return response.status(400).send({ status: 'error', message: validation.messages(), error: "Falta algun campo" })
-    }
-
     try {
       const id = await Manager.obteneridNegocio(email);
 
 
-      const negocio_horario = await Negocio.query().withCount('horarios').where('id', id).fetch();
-      const data = negocio_horario.toJSON();
-      const count = data[0]['__meta__']['horarios_count'];
+      const count = await Manager.tieneHorarioNegocio(id)
 
       if (count == 0) {
         const horario = new HorarioNegocio();
@@ -199,7 +181,7 @@ class NegocioController {
       return response.status(200).send({ status: 'ok', message: 'Informacion editada con exito' })
     } catch (error) {
       console.log(error);
-      return response.status(400).send({ status: 'error', message: 'algo salio mal', error: error.message })
+      return response.status(400).send({ status: 'error', error: 'algo salio mal', message: error.message })
     }
   }
 
