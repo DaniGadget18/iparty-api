@@ -8,9 +8,10 @@ const Menu = use("App/Models/Menus");
 const HorarioNegocio = use("App/Models/HorariosNegocio");
 const Foto = use("App/Models/Fotos");
 const Administrador = use("App/Models/Administradores");
-const comentario = use("App/Models/Comentario");
+const Comentario = use("App/Models/Comentario");
 const Negocio = use("App/Models/Negocios");
 const Hash = use('Hash');
+const Historia =use("App/Models/Historia");
 
 class NegocioController {
 
@@ -272,7 +273,7 @@ class NegocioController {
   // De aqui en adelante hacer solo consultas
   // Consultas
 
-  async cat(){
+  async cat({ response }) {
     const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('horarios').with('categoria_negocio').with('menu.categoria').fetch();
 
     const cat = await Categoria.all();
@@ -282,57 +283,74 @@ class NegocioController {
     var aux;
     var auxa;
     var myObj = {};
+    var result = [];
 
     for (let i in cat.rows) {
       const pp = [];
       p.push(cat.rows[i]['categoria'])
       aux = cat.rows[i]['categoria'];
       auxa = cat.rows[i]['id'];
-      console.log("´k",auxa);
 
 
       for (let i in neg.rows) {
-        console.log("ASD", neg.rows[i]['id_categoria'], auxa)
-        if(neg.rows[i]['id_categoria']==auxa){
-          console.log("entro", neg.rows[i]['id_categoria'], auxa)
+        if (neg.rows[i]['id_categoria'] == auxa) {
           pp.push(neg.rows[i])
         }
 
 
       }
-      myObj[aux]=pp;
+      myObj[aux] = pp;
+
+
+    }
+    result.push(JSON.parse(JSON.stringify(myObj)));
+    var asd = {};
 
 
 
+    for (let i in cat.rows) {
+      const ppt = [];
+      p.push(cat.rows[i]['categoria'])
+      aux = cat.rows[i]['categoria'];
+      auxa = cat.rows[i]['id'];
 
-      console.log(aux) // you should be able to have access to name now
+
+      for (let i in result) {
+
+
+        var obj = JSON.parse(JSON.stringify(result), function (key, value) {
+          if (key == aux) {
+            console.log("yeajjs", key)
+            asd[aux] = JSON.parse(JSON.stringify(result.rows[0]))
+          } else {
+            return value;
+          }
+        });
+
+
+
+      }
+
+
+
     }
 
 
 
-
-
-
-
-    // We expect: Object { Hello="world" }
-    //console.log(myObj, cat['id']); // Object{ Hello="World" } OK!
-
-
-    var result = [];
-    return myObj
+    return response.status(200).send({ message: 'Negocio editado con exito', data: obj })
 
   }
 
   async top({ response }) {
-    const categorias =await Categoria.query()
-    .with('negocios.comentarios.usuario')
-    .with('negocios.fotos')
-    .with('negocios.menu.categoria')
-    .fetch();
+    const categorias = await Categoria.query()
+      .with('negocios.comentarios.usuario')
+      .with('negocios.fotos')
+      .with('negocios.menu.categoria')
+      .fetch();
     //const negocios = await Negocio.find(15);
     //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
     //const comentarios = await comentario.profile().first();
-    return response.status(200).send({message:'Negocio editado con exito', data:categorias})
+    return response.status(200).send({ message: 'Negocio editado con exito', data: categorias })
 
 
     /*const categorias = await Categoria.query()
@@ -356,8 +374,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .orderBy('popularidad', 'desc')
@@ -429,25 +447,6 @@ class NegocioController {
   async getBusqueda({ request, response }) {
 
     const data = await Negocio
-    .query()
-    .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-    .with('categoria_negocio')
-    .with('fotos')
-    .with('horarios')
-    .with('menu')
-    .with('historias')
-    .with('comentarios')
-    .with('comentarios.usuario')
-    .where('nombre', 'LIKE', '%'+request.body['data']+'%')
-    .orWhere('ubicacion', 'LIKE', '%'+request.body['data']+'%')
-    .orWhere('categorias.categoria', 'LIKE', '%'+request.body['data']+'%')
-    .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getBares({response }) {
-
-    const data = await Negocio
       .query()
       .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
       .with('categoria_negocio')
@@ -457,11 +456,14 @@ class NegocioController {
       .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%bar%')
+      .where('nombre', 'LIKE', '%' + request.body['data'] + '%')
+      .orWhere('ubicacion', 'LIKE', '%' + request.body['data'] + '%')
+      .orWhere('categorias.categoria', 'LIKE', '%' + request.body['data'] + '%')
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
   }
-  async getAntros({response }) {
+
+  async getBares({ response }) {
 
     const data = await Negocio
       .query()
@@ -469,7 +471,23 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
+      .with('menu.categoria')
+      .with('historias.usuario')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .where('categorias.categoria', 'LIKE', '%bar%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: data });
+  }
+  async getAntros({ response }) {
+
+    const data = await Negocio
+      .query()
+      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('historias')
       .with('comentarios')
       .with('comentarios.usuario')
@@ -478,7 +496,7 @@ class NegocioController {
     return response.status(200).send({ status: 'ok', data: data });
   }
 
-  async getCantinas({response }) {
+  async getCantinas({ response }) {
 
     const data = await Negocio
       .query()
@@ -486,8 +504,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('categorias.categoria', 'LIKE', '%cantina%')
@@ -495,7 +513,7 @@ class NegocioController {
     return response.status(200).send({ status: 'ok', data: data });
   }
 
-  async getBillar({response }) {
+  async getBillar({ response }) {
 
     const data = await Negocio
       .query()
@@ -503,8 +521,8 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('categorias.categoria', 'LIKE', '%billar%')
@@ -512,7 +530,7 @@ class NegocioController {
     return response.status(200).send({ status: 'ok', data: data });
   }
 
-  async getClubs({response }) {
+  async getClubs({ response }) {
 
     const data = await Negocio
       .query()
@@ -520,15 +538,43 @@ class NegocioController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
       .where('categorias.categoria', 'LIKE', '%club%')
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
   }
+  async historia({ response, request }) {
+    const {id_usuario,id_negocio, duracion,url_file ,tipo, url_miniatura, descripcion} = request.all();
+    const histori = new Historia();
+
+    histori.id_usuario = id_usuario
+    histori.id_negocio = id_negocio
+    histori.duracion = duracion
+    histori.url_file = url_file
+    histori.tipo =tipo
+    histori.url_miniatura = url_miniatura
+    histori.descripcion = duracion
+    await histori.save()
+    const historiaFound = await Historia.findBy("url_file", url_file);
+        if (!historiaFound) {
+          return response.send({
+            status: 400, message: 'Error al guardar la historia.'
+        });
+        }
+        else{
+          return response.send({
+            status: 202, message: 'Se a guardado la historia exitosamente.'
+        });
+
+        }
+
+    
+  }
 
 }
 
 module.exports = NegocioController
+
