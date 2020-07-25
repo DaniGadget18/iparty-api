@@ -45,12 +45,12 @@ Route.group( () => {
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
 
   // Fotos negocios
-  Route.get('apifotos', 'FotoController.obtenerfotosApi');
-  Route.post('subirfoto', 'FotoController.subirfoto');
-  Route.post('insertFotoNegocio', 'FotoController.insertFotoNegocio');
+
+  Route.post('subirfoto', 'FotoController.subirFotosNegocio');
+  Route.post('getFotoByNegocioEmail', 'FotoController.getFotoByNegocioEmail');
+
   Route.post('deleteFotoNegocio', 'FotoController.deleteFotoNegocio');
   Route.get('getFotoById', 'FotoController.getFotoById');
-  Route.get('getFotoByNegocioId', 'FotoController.getFotoByNegocioId');
 
   // Menu negocio
   Route.post('updateMenuByNegocio', 'NegocioController.updateMenuByNegocio');

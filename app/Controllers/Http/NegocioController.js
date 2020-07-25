@@ -12,6 +12,7 @@ const Comentario = use("App/Models/Comentario");
 const Negocio = use("App/Models/Negocios");
 const Hash = use('Hash');
 const Historia =use("App/Models/Historia");
+const Manager = use("App/Controllers/Http/ManagerController");
 
 class NegocioController {
 
@@ -64,10 +65,9 @@ class NegocioController {
       return response.status(400).send({ status: 'error', message: "Falta mandar el email" })
     }
 
+    const id = await Manager.obteneridNegocio(email);
+
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
 
       const negocio = await Negocio.query().with('fotos').with('horarios').with('categoria_negocio').where('id', id).fetch();
       return response.status(200).send({ "status": 'ok', data: negocio })
@@ -99,7 +99,6 @@ class NegocioController {
     }
 
     try {
-
       const negocio = await Negocio.query().with('categoria_negocio').with('usuario').where('id', id).fetch();
       return response.status(200).send({ "status": 'ok', data: negocio })
     } catch (error) {
@@ -110,13 +109,13 @@ class NegocioController {
 
 
   async updateNegocio({ request, response }) {
-    const { email, nombre, ubicacion, id_categorias, informacion, lat, lng, foto } = request.all();
+    const { email, nombre, ubicacion, id_categoria, informacion, lat, lng, foto } = request.all();
 
     const validation = await validate(request.all(), {
       email: 'required | email',
       nombre: 'required',
       ubicacion: 'required',
-      id_categorias: 'required',
+      id_categoria: 'required',
       informacion: 'required',
       lat: 'required',
       lng: 'required'
@@ -127,14 +126,11 @@ class NegocioController {
     }
 
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
-
+      const id = await Manager.obteneridNegocio(email);
       const negocio = await Negocio.query().where('id', id).update({
         nombre: nombre,
         ubicacion: ubicacion,
-        id_categorias: id_categorias,
+        id_categoria: id_categoria,
         informacion: informacion,
         lat: lat,
         lng: lng,
@@ -168,9 +164,8 @@ class NegocioController {
     }
 
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
+      const id = await Manager.obteneridNegocio(email);
+
 
       const negocio_horario = await Negocio.query().withCount('horarios').where('id', id).fetch();
       const data = negocio_horario.toJSON();
@@ -221,15 +216,16 @@ class NegocioController {
       id_categoria: 'required'
     });
 
-    const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp = negociousuario.toJSON();
-    const id_negocio = resp[0]['administradores'][0]['id'];
+
 
     if (validation.fails()) {
       return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
     }
 
     try {
+      const id = await Manager.obteneridNegocio(email);
+
+
       const menu = await Menu
         .query()
         .where('id', id)
@@ -262,7 +258,7 @@ class NegocioController {
     const id_negocio = resp[0]['administradores'][0]['id'];
 
     try {
-      const menu = await Menu.query().where('id_negocio', id_negocio).fetch();
+      const menu = await Menu.query().with('categoria').where('id_negocio', id_negocio).fetch();
 
       return response.status(200).send({ data: menu })
     } catch (error) {
@@ -571,7 +567,7 @@ class NegocioController {
 
         }
 
-    
+
   }
 
 }
