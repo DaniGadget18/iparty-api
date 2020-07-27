@@ -1,6 +1,7 @@
 'use strict'
 const { validate } = use("Validator");
 const Categoria = use("App/Models/Categoria");
+const Negocio = use ("App/Models/Categoria")
 
 
 class CategoriaController {
