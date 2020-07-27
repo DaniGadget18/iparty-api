@@ -45,34 +45,37 @@ Route.group( () => {
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
 
   // Fotos negocios
-  Route.get('apifotos', 'FotoController.obtenerfotosApi');
-  Route.post('subirfoto', 'FotoController.subirfoto');
-  Route.post('insertFotoNegocio', 'FotoController.insertFotoNegocio');
+  Route.post('subirfoto', 'FotoController.subirFotosNegocio');
+  Route.post('getFotoByNegocioEmail', 'FotoController.getFotoByNegocioEmail');
+
   Route.post('deleteFotoNegocio', 'FotoController.deleteFotoNegocio');
   Route.get('getFotoById', 'FotoController.getFotoById');
-  Route.get('getFotoByNegocioId', 'FotoController.getFotoByNegocioId');
 
   // Menu negocio
   Route.post('updateMenuByNegocio', 'NegocioController.updateMenuByNegocio');
-  Route.post('getAllMenuNegocioByNegocio', 'NegocioController.getMenuByNegocioId');
+  Route.post('getAllMenuByNegocio', 'NegocioController.getMenuByNegocioEmail');
+  Route.get('getAllCategorias', 'NegocioController.obtenerCategoriasMenu');
+  Route.post('registrarProductoNegocio', 'NegocioController.registrarProductoNegocio');
+  Route.post('obtenerMenuid', 'NegocioController.obtenerMenubyID');
+  Route.post('eliminarProducto', 'NegocioController.eliminarProducto');
 
 
   // consultas
-  Route.get('top', 'NegocioController.top');
-  Route.post('registrarNegocio', 'NegocioController.registrarNegocio');
-  Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
-  Route.get('top', 'NegocioController.top');
-  Route.get('cat', 'NegocioController.cat');
-  Route.post('historia', 'NegocioController.historia');
-  Route.get('top5', 'NegocioController.getTop5')
-  Route.get('getTop5ByCategoria', 'NegocioController.getTop5ByCategoria')
-  Route.post('createComentario', 'NegocioController.createComentario')
-  Route.get('buscador', 'NegocioController.getBusqueda')
-  Route.get('Bares', 'NegocioController.getBares')
-  Route.get('Antros', 'NegocioController.getAntros')
-  Route.get('Cantinas', 'NegocioController.getCantinas')
-  Route.get('Billares', 'NegocioController.getBillares')
-  Route.get('Clubs', 'NegocioController.getClubs')
+  Route.get('top', 'ConsultaController.top');
+  Route.post('registrarNegocio', 'ConsultaController.registrarNegocio');
+  Route.get('obtenerNegocios', 'ConsultaController.obtenerNegocios');
+  Route.get('top', 'ConsultaController.top');
+  Route.get('cat', 'ConsultaController.cat');
+  Route.post('historia', 'ConsultaController.historia');
+  Route.get('top5', 'ConsultaController.getTop5')
+  Route.get('getTop5ByCategoria', 'ConsultaController.getTop5ByCategoria')
+  Route.post('createComentario', 'ConsultaController.createComentario')
+  Route.get('buscador', 'ConsultaController.getBusqueda')
+  Route.get('Bares', 'ConsultaController.getBares')
+  Route.get('Antros', 'ConsultaController.getAntros')
+  Route.get('Cantinas', 'ConsultaController.getCantinas')
+  Route.get('Billares', 'ConsultaController.getBillar')
+  Route.get('Clubs', 'ConsultaController.getClubs')
 }).prefix('api/negocio/')
 
 

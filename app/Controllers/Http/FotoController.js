@@ -1,86 +1,63 @@
 'use strict'
+const PublitioAPI = use("publitio_js_sdk");
+
 const { validate } = use("Validator");
 const Foto = use("App/Models/Fotos");
-const PublitioAPI = use('publitio_js_sdk').default
-const  { readFileSync } = use('fs');
+const User = use("App/Models/User");
+const Negocio = use("App/Models/Negocios");
+
 
 class FotoController {
 
-
-  async obtenerfotosApi() {
-
-    this.publitio.call('/files/list', 'GET', { offset: '0', limit: '10'})
-      .then(response => { console.log(response) })
-      .catch(error => { console.log(error) })
-  }
-
-  async subirfoto ({ request, response }) {
-    const image  = request.file();
-    console.log(image);
-    const publitio = new PublitioAPI('QzWG6xZdAcL9Z9igcGWA', 'SxtaWjneTr6QeN8Bhs1yB7NmMtSZWxsi');
-    const archivo = readFileSync(image);
-    console.log(archivo);
-    this.publitio.uploadFile(file, 'archivo').then( (data) => {
-      console.log(data);
-    }).catch( (error) => {
-      console.log(error);
-    } )
-
-  }
-
-
-  async insertFotoNegocio({request, response}) {
-    const { id_negocio , foto } = request.all();
+  async subirFotosNegocio({ request, response }) {
+    const { email, url, id_imagen } = request.all();
 
     const validation = await validate(request.all(), {
-      id_negocio : 'required',
-      foto: 'required',
+      email: "required | email",
+      url: "required"
     });
 
-    if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
+    if (validation.fails()){
+      return response.status(400).send({ status:"error", message:"Falta recibir url o email", type: validation.fails()});
     }
 
     try {
+      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
+      const resp = negociousuario.toJSON();
+      const id = resp[0]['administradores'][0]['id'];
 
-      const fotoN = new Foto();
-      fotoN.id_negocio = id_negocio
-      fotoN.foto = foto
-      await fotoN.save();
-      return response.status(200).send({message:'Foto creada con exito', data:fotoN})
+      const negocio = await Negocio.find(id);
+      const foto = await negocio.fotos().create({
+        foto: url
+      });
 
-    } catch (error) {
-      return response.status(400).send({ message:'algo salio mal', error:error })
+      const ultimaFoto = await Foto.query().where('foto', url).fetch();
+      return response.status(200).send({status:'ok', message:'Fotos subidas con exito', foto:ultimaFoto});
+    } catch (e) {
+      return response.status(400).send({status:'error', message:'Hubo un error', type:e.message });
     }
+
   }
 
-  async deleteFotoNegocio({request, response}) {
 
-    try {
-      const foto = await Foto.find(request.body['id'])
-      await foto.delete()
-      return response.status(200).send({message:'Foto eliminada con exito', data:store})
+  async getFotoByNegocioEmail({request ,response}){
+    const { email } = request.all();
 
-    } catch (error) {
-      return response.status(400).send({ message:'algo salio mal', error:error })
+    const validation = await validate(request.all(), {
+      email: "required | email"
+    });
+
+    if (validation.fails()){
+      return response.status(400).send({ status:"error", message:"Falta recibir el email", type: validation.fails()});
     }
-  }
-
-  async getFotoById({request ,response}){
 
     try {
-      const foto = await Foto.query().where('id', request.body['id']).fetch()
-      return response.status(200).send({data:foto})
-    } catch (error) {
-      return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
-    }
-  }
+      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
+      const resp = negociousuario.toJSON();
+      const id = resp[0]['administradores'][0]['id'];
 
-  async getFotoByNegocioId({request ,response}){
-
-    try {
-      const foto = await Foto.query().where('id_negocio', request.body['id_negocio']).fetch()
-      return response.status(200).send({data:foto})
+      const fotos = await Negocio.query().with('fotos').where('id', id).fetch();
+      return response.status(200).send({status:'ok', data:fotos})
     } catch (error) {
       return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
     }
