@@ -205,7 +205,7 @@ class ConsultaController {
       .with('comentarios')
       .with('comentarios.usuario')
       .with('categoria_negocio', (builder) => {
-        builder.where('categoria', 'LIKE', '%bar%')
+        builder.where('categoria', 'LIKE', '%antro%')
       })
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
@@ -223,7 +223,7 @@ class ConsultaController {
       .with('comentarios')
       .with('comentarios.usuario')
       .with('categoria_negocio', (builder) => {
-        builder.where('categoria', 'LIKE', '%bar%')
+        builder.where('categoria', 'LIKE', '%cantina%')
       })
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
@@ -241,7 +241,7 @@ class ConsultaController {
       .with('comentarios')
       .with('comentarios.usuario')
       .with('categoria_negocio', (builder) => {
-        builder.where('categoria', 'LIKE', '%bar%')
+        builder.where('categoria', 'LIKE', '%billar%')
       })
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
@@ -260,7 +260,7 @@ class ConsultaController {
         .with('comentarios')
         .with('comentarios.usuario')
         .with('categoria_negocio', (builder) => {
-          builder.where('categoria', 'LIKE', '%bar%')
+          builder.where('categoria', 'LIKE', '%club%')
         })
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
