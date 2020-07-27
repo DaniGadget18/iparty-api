@@ -8,7 +8,7 @@ class Menus extends Model {
     return 'menus';
   }
   negocio() {
-      return this.belongsTo('App/Models/Negocio', 'id_negocio', 'id');
+      return this.belongsTo('App/Models/Negocios', 'id_negocio', 'id');
   }
   categoria() {
     return this.belongsTo('App/Models/Categoriamenu', 'id_categoria', 'id');
