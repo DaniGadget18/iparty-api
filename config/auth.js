@@ -90,5 +90,15 @@ module.exports = {
     scheme: 'api',
     uid: 'email',
     password: 'password'
-  }
+  },
+
+  mongo_api: {
+    serializer: 'mongoose',
+    scheme: 'api',
+    model: 'App/Models/User',
+    token: 'App/Models/Token',
+    uid: 'username', // The user identifier. Ej: email, username
+    password: '', // Password field if using user-password validation
+    expiry: '30d', // Not yet implemented
+  },
 }

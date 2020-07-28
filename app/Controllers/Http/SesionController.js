@@ -120,12 +120,12 @@ class SesionController {
             return response.send({status:400, message: "No existe este usuario" });
         }
         return response.status(200).send({message:'usuario encontrado', data:userr})
-
-
-       
     }
 
-
+    async logout({auth, response}){
+      await auth.logout()
+      return response.status(200).send({message:'Hata la proxima.'})
+    }
 
 }
 

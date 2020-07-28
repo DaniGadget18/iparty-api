@@ -10,8 +10,10 @@ const Foto = use("App/Models/Fotos");
 const Administrador = use("App/Models/Administradores");
 const Comentario = use("App/Models/Comentario");
 const Negocio = use("App/Models/Negocios");
+const CategoriaMenu = use("App/Models/Categoriamenu");
 const Hash = use('Hash');
 const Historia =use("App/Models/Historia");
+const Manager = use("App/Controllers/Http/ManagerController");
 
 class NegocioController {
 
@@ -25,6 +27,7 @@ class NegocioController {
       fecha_nacimiento: 'required',
       nombreAdmin: 'required'
     });
+
 
     if (validation.fails()) {
       return response.status(400).send({ status: 'error', message: 'Falta un campo' })
@@ -64,10 +67,9 @@ class NegocioController {
       return response.status(400).send({ status: 'error', message: "Falta mandar el email" })
     }
 
+    const id = await Manager.obteneridNegocio(email);
+
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
 
       const negocio = await Negocio.query().with('fotos').with('horarios').with('categoria_negocio').where('id', id).fetch();
       return response.status(200).send({ "status": 'ok', data: negocio })
@@ -99,7 +101,6 @@ class NegocioController {
     }
 
     try {
-
       const negocio = await Negocio.query().with('categoria_negocio').with('usuario').where('id', id).fetch();
       return response.status(200).send({ "status": 'ok', data: negocio })
     } catch (error) {
@@ -110,13 +111,13 @@ class NegocioController {
 
 
   async updateNegocio({ request, response }) {
-    const { email, nombre, ubicacion, id_categorias, informacion, lat, lng, foto } = request.all();
+    const { email, nombre, ubicacion, id_categoria, informacion, lat, lng, foto } = request.all();
 
     const validation = await validate(request.all(), {
       email: 'required | email',
       nombre: 'required',
       ubicacion: 'required',
-      id_categorias: 'required',
+      id_categoria: 'required',
       informacion: 'required',
       lat: 'required',
       lng: 'required'
@@ -127,14 +128,11 @@ class NegocioController {
     }
 
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
-
+      const id = await Manager.obteneridNegocio(email);
       const negocio = await Negocio.query().where('id', id).update({
         nombre: nombre,
         ubicacion: ubicacion,
-        id_categorias: id_categorias,
+        id_categoria: id_categoria,
         informacion: informacion,
         lat: lat,
         lng: lng,
@@ -151,30 +149,11 @@ class NegocioController {
   async updateHorarioNegocio({ request, response }) {
     const { email, lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
 
-    const validation = await validate(request.all(), {
-      email: 'required | email',
-      lunes: 'required',
-      martes: 'required',
-      miercoles: 'required',
-      jueves: 'required',
-      viernes: 'required',
-      sabado: 'required',
-      domingo: 'required'
-    });
-
-
-    if (validation.fails()) {
-      return response.status(400).send({ status: 'error', message: validation.messages(), error: "Falta algun campo" })
-    }
-
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
+      const id = await Manager.obteneridNegocio(email);
 
-      const negocio_horario = await Negocio.query().withCount('horarios').where('id', id).fetch();
-      const data = negocio_horario.toJSON();
-      const count = data[0]['__meta__']['horarios_count'];
+
+      const count = await Manager.tieneHorarioNegocio(id)
 
       if (count == 0) {
         const horario = new HorarioNegocio();
@@ -204,26 +183,61 @@ class NegocioController {
       return response.status(200).send({ status: 'ok', message: 'Informacion editada con exito' })
     } catch (error) {
       console.log(error);
-      return response.status(400).send({ status: 'error', message: 'algo salio mal', error: error.message })
+      return response.status(400).send({ status: 'error', error: 'algo salio mal', message: error.message })
     }
   }
 
 
   // Menu
-  async updateMenuByNegocio({ request, response }) {
-    const { id, email, id_categoria, nombre, informacion } = request.all();
+  async obtenerCategoriasMenu({ request, response }) {
+    try{
+      const categoriasMenu = await CategoriaMenu.all();
+      return response.status(200).send({ status:'ok', data: categoriasMenu })
+    } catch (error) {
+      return response.status(400).send({ status:'error', message: 'algo salio mal', error: error.message })
+    }
+  }
+
+  async registrarProductoNegocio({ request, response }) {
+    const { email, nombre, informacion, idcategoriamenu } = request.all();
 
     const validation = await validate(request.all(), {
-      id: 'required',
       email: 'required | email',
       nombre: 'required',
       informacion: 'required',
-      id_categoria: 'required'
+      idcategoriamenu: 'required',
     });
 
-    const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp = negociousuario.toJSON();
-    const id_negocio = resp[0]['administradores'][0]['id'];
+    if (validation.fails()) {
+      return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
+    }
+
+    try{
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const negocio = await Negocio.find(id_negocio)
+
+      const menu = await negocio
+        .menu()
+        .create({
+          nombre,
+          informacion,
+          id_categoria: idcategoriamenu
+        })
+      return response.status(200).send({ status:'ok', message:'Se registro correctamente el producto', data: menu })
+    } catch (error) {
+      return response.status(400).send({ status:'error', message: 'algo salio mal', error: error.message })
+    }
+  }
+
+  async updateMenuByNegocio({ request, response }) {
+    const { id, idcategoriamenu, nombre, informacion } = request.all();
+
+    const validation = await validate(request.all(), {
+      id: 'required',
+      nombre: 'required',
+      informacion: 'required',
+      idcategoriamenu: 'required'
+    });
 
     if (validation.fails()) {
       return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
@@ -233,20 +247,19 @@ class NegocioController {
       const menu = await Menu
         .query()
         .where('id', id)
-        .where('id_negocio', id_negocio)
         .update({
           nombre: nombre,
           informacion: informacion,
-          id_categoria: id_categoria
+          id_categoria: idcategoriamenu
         })
-      const editada = await Menu.query().where('id', id).fetch()
-      return response.status(200).send({ message: 'Informacion editada con exito', data: editada })
+
+      return response.status(200).send({ status:'ok', message: 'Producto editado correctamente', data: menu })
     } catch (error) {
-      return response.status(400).send({ message: 'algo salio mal', error: error })
+      return response.status(400).send({ status:'error', message: 'algo salio mal', error: error.message })
     }
   }
 
-  async getMenuByNegocioId({ request, response }) {
+  async getMenuByNegocioEmail({ request, response }) {
     const { email } = request.all();
 
     const validation = await validate(request.all(), {
@@ -257,295 +270,56 @@ class NegocioController {
       return response.status(400).send({ message: validation.messages(), error: "Falta el email" })
     }
 
-    const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-    const resp = negociousuario.toJSON();
-    const id_negocio = resp[0]['administradores'][0]['id'];
+    const id_negocio = await Manager.obteneridNegocio(email);
 
     try {
-      const menu = await Menu.query().where('id_negocio', id_negocio).fetch();
+      const menu = await Negocio.query().with('menu.categoria').where('id', id_negocio).fetch();
 
       return response.status(200).send({ data: menu })
     } catch (error) {
       return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
     }
   }
-  // Hacia arriba metodos sobre CRUD
-  // De aqui en adelante hacer solo consultas
-  // Consultas
 
-  async cat({ response }) {
-    const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('horarios').with('categoria_negocio').with('menu.categoria').fetch();
-
-    const cat = await Categoria.all();
-    const p = [];
-
-
-    var aux;
-    var auxa;
-    var myObj = {};
-    var result = [];
-
-    for (let i in cat.rows) {
-      const pp = [];
-      p.push(cat.rows[i]['categoria'])
-      aux = cat.rows[i]['categoria'];
-      auxa = cat.rows[i]['id'];
-
-
-      for (let i in neg.rows) {
-        if (neg.rows[i]['id_categoria'] == auxa) {
-          pp.push(neg.rows[i])
-        }
-
-
-      }
-      myObj[aux] = pp;
-
-
-    }
-    result.push(JSON.parse(JSON.stringify(myObj)));
-    var asd = {};
-
-
-
-    for (let i in cat.rows) {
-      const ppt = [];
-      p.push(cat.rows[i]['categoria'])
-      aux = cat.rows[i]['categoria'];
-      auxa = cat.rows[i]['id'];
-
-
-      for (let i in result) {
-
-
-        var obj = JSON.parse(JSON.stringify(result), function (key, value) {
-          if (key == aux) {
-            console.log("yeajjs", key)
-            asd[aux] = JSON.parse(JSON.stringify(result.rows[0]))
-          } else {
-            return value;
-          }
-        });
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return response.status(200).send({ message: 'Negocio editado con exito', data: obj })
-
-  }
-
-  async top({ response }) {
-    const categorias = await Categoria.query()
-      .with('negocios.comentarios.usuario')
-      .with('negocios.fotos')
-      .with('negocios.menu.categoria')
-      .fetch();
-    //const negocios = await Negocio.find(15);
-    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
-    //const comentarios = await comentario.profile().first();
-    return response.status(200).send({ message: 'Negocio editado con exito', data: categorias })
-
-
-    /*const categorias = await Categoria.query()
-      .with('negocios.comentarios.usuario')
-      .with('negocios.fotos')
-      .with('negocios.menu.categoria')
-      .with('negocios.categoria_negocio')
-      .fetch();*/
-    //const negocios = await Negocio.find(15);
-    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
-    //const comentarios = await comentario.profile().first();
-
-    return response.status(200).send({ message: 'HOLI', data: myObj })
-
-  }
-
-  async getTop5({ response }) {
-
-    const data = await Negocio
-      .query()
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .orderBy('popularidad', 'desc')
-      .limit(5)
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-
-  }
-
-  async getTop5ByCategoria({ request, response }) {
-
-    const data = await Negocio
-      .query()
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu')
-      .with('historias')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .where('id_categoria', request.body['id_categoria'])
-      .orderBy('popularidad', 'desc')
-      .limit(5)
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async createComentario({ request, response }) {
-    const { id_negocio, id_usuario, comentario, calificacion } = request.all();
+  async obtenerMenubyID({request, response}) {
+    const { id} = request.all();
 
     const validation = await validate(request.all(), {
-      id_negocio: 'required',
-      id_usuario: 'required',
-      comentario: 'required',
-      calificacion: 'integer|required|max:1',
+      id: 'required',
     });
 
     if (validation.fails()) {
-      return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
+      return response.status(400).send({message: validation.messages(), error: "Falta el ID"})
     }
-    try {
-      //guargar comentario
-      const comentari = new Comentario();
-      comentari.id_negocio = id_negocio
-      comentari.id_usuario = id_usuario
-      comentari.comentario = comentario
-      comentari.calificacion = calificacion
-      await comentari.save();
 
-      //actualizar popularidad del negocio
-      const count = await Comentario
-        .query().where('id_negocio', id_negocio).count('* as cantidad')
-      const sum = await Comentario
-        .query().where('id_negocio', id_negocio).sum('calificacion as suma')
-      const NuevaPopularidad = sum[0].suma / count[0].cantidad
-      const negocio = await Negocio
-        .query()
-        .where('id', id_negocio)
-        .update({
-          popularidad: NuevaPopularidad,
-        })
-      return response.status(200).send({ message: 'Comentatio guardado con exito', data: comentari })
+    try {
+      const menu = await Menu.find(id);
+      return response.status(200).send({status:'ok', data: menu })
+    } catch (error) {
+      return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
+    }
+  }
+
+  async eliminarProducto({request, response}) {
+    const { id } = request.all();
+    const validation = await validate(request.all(), {
+      id: 'required',
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({message: validation.messages(), error: "Falta el ID"})
+    }
+
+    try {
+      const menu = await Menu.find(id);
+      await menu.delete();
+      return response.status(200).send({ status:'ok', message:'Se elimino correctamente', data: menu })
     } catch (error) {
       return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
     }
 
   }
 
-  async getBusqueda({ request, response }) {
-
-    const data = await Negocio
-      .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu')
-      .with('historias')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .where('nombre', 'LIKE', '%' + request.body['data'] + '%')
-      .orWhere('ubicacion', 'LIKE', '%' + request.body['data'] + '%')
-      .orWhere('categorias.categoria', 'LIKE', '%' + request.body['data'] + '%')
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getBares({ response }) {
-
-    const data = await Negocio
-      .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%bar%')
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-  async getAntros({ response }) {
-
-    const data = await Negocio
-      .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('historias')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%antro%')
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getCantinas({ response }) {
-
-    const data = await Negocio
-      .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%cantina%')
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getBillar({ response }) {
-
-    const data = await Negocio
-      .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%billar%')
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getClubs({ response }) {
-
-    const data = await Negocio
-      .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%club%')
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
   async historia({ response, request }) {
     const {id_usuario,id_negocio, duracion,url_file ,tipo, url_miniatura, descripcion} = request.all();
     const histori = new Historia();
@@ -556,7 +330,7 @@ class NegocioController {
     histori.url_file = url_file
     histori.tipo =tipo
     histori.url_miniatura = url_miniatura
-    histori.descripcion = duracion
+    histori.descripcion = descripcion
     await histori.save()
     const historiaFound = await Historia.findBy("url_file", url_file);
         if (!historiaFound) {
@@ -571,7 +345,7 @@ class NegocioController {
 
         }
 
-    
+
   }
 
   async fotos({ response, request }) {
