@@ -1,63 +1,16 @@
 'use strict'
 const { validate } = use("Validator");
-const Database = use("Database");
-const User = use("App/Models/User");
-const Categoria = use("App/Models/Categorias");
-const Evento = use("App/Models/Eventos");
 const Menu = use("App/Models/Menus");
 const HorarioNegocio = use("App/Models/HorariosNegocio");
-const Foto = use("App/Models/Fotos");
-const Administrador = use("App/Models/Administradores");
-const Comentario = use("App/Models/Comentario");
 const Negocio = use("App/Models/Negocios");
 const CategoriaMenu = use("App/Models/Categoriamenu");
-const Hash = use('Hash');
 const Historia =use("App/Models/Historia");
 const Manager = use("App/Controllers/Http/ManagerController");
 
 class NegocioController {
 
-  // Metodos con Lucid
-  async registrarNegocioLucid({ request, response }) {
-    const { nombre, email, password, fecha_nacimiento, nombreAdmin } = request.all();
-    const validation = await validate(request.all(), {
-      nombre: 'required',
-      email: 'required | email',
-      password: 'required',
-      fecha_nacimiento: 'required',
-      nombreAdmin: 'required'
-    });
-
-
-    if (validation.fails()) {
-      return response.status(400).send({ status: 'error', message: 'Falta un campo' })
-    }
-
-    try {
-      const negocio = await Negocio.create({
-        nombre
-      });
-      const usuario = await User.create({
-        email,
-        password,
-        nombre: nombreAdmin,
-        fecha_nacimiento
-      });
-      const administradores = await Administrador.create({
-        id_usuario: usuario.id,
-        id_negocio: negocio.id,
-        id_rol: 1
-      });
-
-      return response.status(200).send({ status: 'ok', message: 'Negocio creado con exito', data: administradores })
-    } catch (error) {
-      return response.status(400).send({ status: 'error', message: 'Hubo un error', error: error })
-    }
-  }
-
   async obtenerNegocioByEmail({ request, response }) {
     const { email } = request.all();
-
 
     const validation = await validate(request.all(), {
       email: 'required | email'
@@ -78,37 +31,6 @@ class NegocioController {
       return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error })
     }
   }
-
-  async obtenerNegocios({ response }) {
-    try {
-      const negocios = await Negocio.all();
-      console.log(negocios.length);
-      return response.status(200).send({ status: 'ok', data: negocios });
-    } catch (e) {
-      return response.status(400).send({ status: 'ok', message: 'Hubo un error' });
-    }
-  }
-
-  async obtenerNegocioByID({ request, response }) {
-    const { id } = request.all();
-
-    const validation = await validate(request.all(), {
-      id: 'required'
-    });
-
-    if (validation.fails()) {
-      return response.status(400).send({ status: 'error', message: "Falta mandar el id" })
-    }
-
-    try {
-      const negocio = await Negocio.query().with('categoria_negocio').with('usuario').where('id', id).fetch();
-      return response.status(200).send({ "status": 'ok', data: negocio })
-    } catch (error) {
-      console.log(error);
-      return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error.message })
-    }
-  }
-
 
   async updateNegocio({ request, response }) {
     const { email, nombre, ubicacion, id_categoria, informacion, lat, lng, foto } = request.all();
