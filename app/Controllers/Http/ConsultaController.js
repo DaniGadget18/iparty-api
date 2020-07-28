@@ -290,8 +290,8 @@ class ConsultaController {
 
     try {
 
-      const data = await
-      return response.status(200).send({ status: 'ok', data: data });
+      //const data = await
+      //return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
       return response.status(200).send({ status: 'ok', error: e.message });
     }
