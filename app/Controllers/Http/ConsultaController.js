@@ -180,15 +180,15 @@ class ConsultaController {
 
     const data = await Negocio
       .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
-      .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%bar%')
+      .with('categoria_negocio', (builder) => {
+        builder.where('categoria', 'LIKE', '%bar%')
+      })
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
   }
@@ -196,15 +196,16 @@ class ConsultaController {
 
     const data = await Negocio
       .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%antro%')
+      .with('categoria_negocio', (builder) => {
+        builder.where('categoria', 'LIKE', '%antro%')
+      })
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
   }
@@ -213,15 +214,16 @@ class ConsultaController {
 
     const data = await Negocio
       .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
-      .with('menu')
-      .with('historias')
+      .with('menu.categoria')
+      .with('historias.usuario')
       .with('comentarios')
       .with('comentarios.usuario')
-      .where('categorias.categoria', 'LIKE', '%cantina%')
+      .with('categoria_negocio', (builder) => {
+        builder.where('categoria', 'LIKE', '%cantina%')
+      })
       .fetch()
     return response.status(200).send({ status: 'ok', data: data });
   }
@@ -229,18 +231,18 @@ class ConsultaController {
   async getBillar({ response }) {
 
     const data = await Negocio
-    .query()
-    .with('categoria_negocio')
-    .with('fotos')
-    .with('horarios')
-    .with('menu.categoria')
-    .with('historias.usuario')
-    .with('comentarios')
-    .with('comentarios.usuario')
-    .with('categoria_negocio', (builder) => {
-      builder.where('categoria', 'LIKE', '%billar%')
-    })
-    .fetch()
+      .query()
+      .with('categoria_negocio')
+      .with('fotos')
+      .with('horarios')
+      .with('menu.categoria')
+      .with('historias.usuario')
+      .with('comentarios')
+      .with('comentarios.usuario')
+      .with('categoria_negocio', (builder) => {
+        builder.where('categoria', 'LIKE', '%billar%')
+      })
+      .fetch()
     return response.status(200).send({ status: 'ok', data: data });
   }
 
@@ -249,19 +251,20 @@ class ConsultaController {
     try {
       const data = await Negocio
         .query()
-        .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
         .with('categoria_negocio')
         .with('fotos')
         .with('horarios')
-        .with('menu')
-        .with('historias')
+        .with('menu.categoria')
+        .with('historias.usuario')
         .with('comentarios')
         .with('comentarios.usuario')
-        .where('categorias.categoria', 'LIKE', '%club%')
+        .with('categoria_negocio', (builder) => {
+          builder.where('categoria', 'LIKE', '%club%')
+        })
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
-      return response.status(200).send({ status: 'ok', error: error.message });
+      return response.status(200).send({ status: 'ok', error: e.message });
     }
 
 
