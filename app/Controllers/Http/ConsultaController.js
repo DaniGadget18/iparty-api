@@ -178,79 +178,11 @@ class ConsultaController {
 
   async getBares({ response }) {
 
-    const data = await Negocio
-      .query()
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .with('categoria_negocio', (builder) => {
-        builder.where('categoria', 'LIKE', '%bar%')
-      })
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-  async getAntros({ response }) {
-
-    const data = await Negocio
-      .query()
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .with('categoria_negocio', (builder) => {
-        builder.where('categoria', 'LIKE', '%antro%')
-      })
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getCantinas({ response }) {
-
-    const data = await Negocio
-      .query()
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .with('categoria_negocio', (builder) => {
-        builder.where('categoria', 'LIKE', '%cantina%')
-      })
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getBillar({ response }) {
-
-    const data = await Negocio
-      .query()
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .with('categoria_negocio', (builder) => {
-        builder.where('categoria', 'LIKE', '%billar%')
-      })
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
-  }
-
-  async getClubs({ response }) {
-
-    try {
+    try{
       const data = await Negocio
         .query()
+        .innerJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+        .select('negocios.id' ,'id_categoria','nombre', 'foto', 'ubicacion', 'informacion', 'lat', 'lng', 'popularidad', 'negocios.created_at', 'negocios.updated_at')
         .with('categoria_negocio')
         .with('fotos')
         .with('horarios')
@@ -258,9 +190,94 @@ class ConsultaController {
         .with('historias.usuario')
         .with('comentarios')
         .with('comentarios.usuario')
-        .with('categoria_negocio', (builder) => {
-          builder.where('categoria', 'LIKE', '%club%')
-        })
+        .where('categorias.categoria', 'LIKE', '%bar%')
+        .fetch()
+      return response.status(200).send({ status: 'ok', data: data });
+    } catch (e) {
+      return response.status(200).send({ status: 'ok', error: e.message });
+    }
+  }
+  async getAntros({ response }) {
+
+    try{
+      const data = await Negocio
+        .query()
+        .innerJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+        .select('negocios.id' ,'id_categoria','nombre', 'foto', 'ubicacion', 'informacion', 'lat', 'lng', 'popularidad', 'negocios.created_at', 'negocios.updated_at')
+        .with('categoria_negocio')
+        .with('fotos')
+        .with('horarios')
+        .with('menu.categoria')
+        .with('historias.usuario')
+        .with('comentarios')
+        .with('comentarios.usuario')
+        .where('categorias.categoria', 'LIKE', '%antro%')
+        .fetch()
+      return response.status(200).send({ status: 'ok', data: data });
+    } catch (e) {
+      return response.status(200).send({ status: 'ok', error: e.message });
+    }
+  }
+
+  async getCantinas({ response }) {
+
+    try{
+      const data = await Negocio
+        .query()
+        .innerJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+        .select('negocios.id' ,'id_categoria','nombre', 'foto', 'ubicacion', 'informacion', 'lat', 'lng', 'popularidad', 'negocios.created_at', 'negocios.updated_at')
+        .with('categoria_negocio')
+        .with('fotos')
+        .with('horarios')
+        .with('menu.categoria')
+        .with('historias.usuario')
+        .with('comentarios')
+        .with('comentarios.usuario')
+        .where('categorias.categoria', 'LIKE', '%cantina%')
+        .fetch()
+      return response.status(200).send({ status: 'ok', data: data });
+    } catch (e) {
+      return response.status(200).send({ status: 'ok', error: e.message });
+    }
+  }
+
+  async getBillar({ response }) {
+    try{
+      const data = await Negocio
+        .query()
+        .innerJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+        .select('negocios.id' ,'id_categoria','nombre', 'foto', 'ubicacion', 'informacion', 'lat', 'lng', 'popularidad', 'negocios.created_at', 'negocios.updated_at')
+        .with('categoria_negocio')
+        .with('fotos')
+        .with('horarios')
+        .with('menu.categoria')
+        .with('historias.usuario')
+        .with('comentarios')
+        .with('comentarios.usuario')
+        .where('categorias.categoria', 'LIKE', '%billar%')
+        .fetch()
+      return response.status(200).send({ status: 'ok', data: data });
+    } catch (e) {
+      return response.status(200).send({ status: 'ok', error: e.message });
+    }
+  }
+
+  async getClubs({ response }) {
+
+    try {
+
+      const data = await Negocio
+        .query()
+        .innerJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+        .select('negocios.id' ,'id_categoria','nombre', 'foto', 'ubicacion', 'informacion', 'lat', 'lng', 'popularidad', 'negocios.created_at', 'negocios.updated_at')
+        .with('categoria_negocio')
+        .with('fotos')
+        .with('horarios')
+        .with('menu.categoria')
+        .with('historias.usuario')
+        .with('comentarios')
+        .with('comentarios.usuario')
+        .where('categorias.categoria', 'LIKE', '%club%')
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
