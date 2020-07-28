@@ -28,6 +28,7 @@ class NegocioController {
       nombreAdmin: 'required'
     });
 
+
     if (validation.fails()) {
       return response.status(400).send({ status: 'error', message: 'Falta un campo' })
     }
@@ -329,7 +330,7 @@ class NegocioController {
     histori.url_file = url_file
     histori.tipo =tipo
     histori.url_miniatura = url_miniatura
-    histori.descripcion = duracion
+    histori.descripcion = descripcion
     await histori.save()
     const historiaFound = await Historia.findBy("url_file", url_file);
         if (!historiaFound) {
