@@ -122,7 +122,7 @@ class SesionController {
         return response.status(200).send({message:'usuario encontrado', data:userr})
     }
 
-    async editarusuario({auth, response}){
+    async logout({auth, response}){
       await auth.logout()
       return response.status(200).send({message:'Hata la proxima.'})
     }

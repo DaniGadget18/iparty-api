@@ -3,20 +3,18 @@
 const BaseModel = use('MongooseModel')
 
 /**
- * @class Foo
+ * @class mongo_Conversation
  */
-class Foo extends BaseModel {
+class mongo_Conversation extends BaseModel {
   static boot ({ schema }) {
     // Hooks:
     // this.addHook('preSave', () => {})
-    // this.addHook('preSave', 'FooHook.method')
+    // this.addHook('preSave', 'mongo_ConversationHook.method')
     // Indexes:
     // this.index({}, {background: true})
-    this.addHook('preSave', 'UserHook.notifyUpdate')
-    this.index({ email: 1 }, { background: true })
   }
   /**
-   * Foo's schema
+   * mongo_Conversation's schema
    */
   static get schema () {
     return {
@@ -25,4 +23,4 @@ class Foo extends BaseModel {
   }
 }
 
-module.exports = Foo.buildModel('Foo')
+module.exports = mongo_Conversation.buildModel('mongo_Conversation')

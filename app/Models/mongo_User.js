@@ -3,18 +3,18 @@
 const BaseModel = use('MongooseModel')
 
 /**
- * @class Foo1
+ * @class mongo_User
  */
-class Foo1 extends BaseModel {
+class mongo_User extends BaseModel {
   static boot ({ schema }) {
     // Hooks:
     // this.addHook('preSave', () => {})
-    // this.addHook('preSave', 'Foo1Hook.method')
+    // this.addHook('preSave', 'mongo_UserHook.method')
     // Indexes:
     // this.index({}, {background: true})
   }
   /**
-   * Foo1's schema
+   * mongo_User's schema
    */
   static get schema () {
     return {
@@ -23,4 +23,4 @@ class Foo1 extends BaseModel {
   }
 }
 
-module.exports = Foo1.buildModel('Foo1')
+module.exports = mongo_User.buildModel('mongo_User')
