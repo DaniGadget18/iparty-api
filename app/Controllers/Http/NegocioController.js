@@ -574,6 +574,30 @@ class NegocioController {
     
   }
 
+  async fotos({ response, request }) {
+    const {foto,id_negocio} = request.all();
+    const fotos = new Foto();
+
+    histori.foto = foto
+    histori.id_negocio = id_negocio
+   
+    await fotos.save()
+    const historiaFound = await Historia.fotos("url_file", url_file);
+        if (!historiaFound) {
+          return response.send({
+            status: 400, message: 'Error al guardar la historia.'
+        });
+        }
+        else{
+          return response.send({
+            status: 202, message: 'Se a guardado la historia exitosamente.'
+        });
+
+        }
+
+    
+  }
+
 }
 
 module.exports = NegocioController
