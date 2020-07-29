@@ -1,12 +1,12 @@
 'use strict'
 
-const mongo_User = require("../../Models/test");
+//const mongo_User = require("../../Models/test");
 
 const Negocio = use("App/Models/Negocios");
 const Categoria = use("App/Models/Categorias");
 const { validate } = use("Validator");
 const Comentario = use("App/Models/Comentario");
-const User_mongo = use("App/Models/test")
+//const User_mongo = use("App/Models/test")
 
 
 class ConsultaController {

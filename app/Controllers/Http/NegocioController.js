@@ -4,7 +4,8 @@ const Menu = use("App/Models/Menus");
 const HorarioNegocio = use("App/Models/HorariosNegocio");
 const Negocio = use("App/Models/Negocios");
 const CategoriaMenu = use("App/Models/Categoriamenu");
-const Historia =use("App/Models/Historia");
+const Historia = use("App/Models/Historia");
+const Comentario = use("App/Models/Comentario");
 const Manager = use("App/Controllers/Http/ManagerController");
 
 class NegocioController {
@@ -112,11 +113,11 @@ class NegocioController {
 
   // Menu
   async obtenerCategoriasMenu({ request, response }) {
-    try{
+    try {
       const categoriasMenu = await CategoriaMenu.all();
-      return response.status(200).send({ status:'ok', data: categoriasMenu })
+      return response.status(200).send({ status: 'ok', data: categoriasMenu })
     } catch (error) {
-      return response.status(400).send({ status:'error', message: 'algo salio mal', error: error.message })
+      return response.status(400).send({ status: 'error', message: 'algo salio mal', error: error.message })
     }
   }
 
@@ -134,7 +135,7 @@ class NegocioController {
       return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
     }
 
-    try{
+    try {
       const id_negocio = await Manager.obteneridNegocio(email);
       const negocio = await Negocio.find(id_negocio)
 
@@ -145,9 +146,9 @@ class NegocioController {
           informacion,
           id_categoria: idcategoriamenu
         })
-      return response.status(200).send({ status:'ok', message:'Se registro correctamente el producto', data: menu })
+      return response.status(200).send({ status: 'ok', message: 'Se registro correctamente el producto', data: menu })
     } catch (error) {
-      return response.status(400).send({ status:'error', message: 'algo salio mal', error: error.message })
+      return response.status(400).send({ status: 'error', message: 'algo salio mal', error: error.message })
     }
   }
 
@@ -175,9 +176,9 @@ class NegocioController {
           id_categoria: idcategoriamenu
         })
 
-      return response.status(200).send({ status:'ok', message: 'Producto editado correctamente', data: menu })
+      return response.status(200).send({ status: 'ok', message: 'Producto editado correctamente', data: menu })
     } catch (error) {
-      return response.status(400).send({ status:'error', message: 'algo salio mal', error: error.message })
+      return response.status(400).send({ status: 'error', message: 'algo salio mal', error: error.message })
     }
   }
 
@@ -203,39 +204,39 @@ class NegocioController {
     }
   }
 
-  async obtenerMenubyID({request, response}) {
-    const { id} = request.all();
+  async obtenerMenubyID({ request, response }) {
+    const { id } = request.all();
 
     const validation = await validate(request.all(), {
       id: 'required',
     });
 
     if (validation.fails()) {
-      return response.status(400).send({message: validation.messages(), error: "Falta el ID"})
+      return response.status(400).send({ message: validation.messages(), error: "Falta el ID" })
     }
 
     try {
       const menu = await Menu.find(id);
-      return response.status(200).send({status:'ok', data: menu })
+      return response.status(200).send({ status: 'ok', data: menu })
     } catch (error) {
       return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
     }
   }
 
-  async eliminarProducto({request, response}) {
+  async eliminarProducto({ request, response }) {
     const { id } = request.all();
     const validation = await validate(request.all(), {
       id: 'required',
     });
 
     if (validation.fails()) {
-      return response.status(400).send({message: validation.messages(), error: "Falta el ID"})
+      return response.status(400).send({ message: validation.messages(), error: "Falta el ID" })
     }
 
     try {
       const menu = await Menu.find(id);
       await menu.delete();
-      return response.status(200).send({ status:'ok', message:'Se elimino correctamente', data: menu })
+      return response.status(200).send({ status: 'ok', message: 'Se elimino correctamente', data: menu })
     } catch (error) {
       return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
     }
@@ -243,75 +244,89 @@ class NegocioController {
   }
 
   async historia({ response, request }) {
-    const {id_usuario,id_negocio, duracion,url_file ,tipo, url_miniatura, descripcion} = request.all();
+    const { id_usuario, id_negocio, duracion, url_file, tipo, url_miniatura, descripcion } = request.all();
     const histori = new Historia();
 
     histori.id_usuario = id_usuario
     histori.id_negocio = id_negocio
     histori.duracion = duracion
     histori.url_file = url_file
-    histori.tipo =tipo
+    histori.tipo = tipo
     histori.url_miniatura = url_miniatura
     histori.descripcion = descripcion
     await histori.save()
     const historiaFound = await Historia.findBy("url_file", url_file);
-        if (!historiaFound) {
-          return response.send({
-            status: 400, message: 'Error al guardar la historia.'
-        });
-        }
-        else{
-          return response.send({
-            status: 202, message: 'Se a guardado la historia exitosamente.'
-        });
+    if (!historiaFound) {
+      return response.send({
+        status: 400, message: 'Error al guardar la historia.'
+      });
+    }
+    else {
+      return response.send({
+        status: 202, message: 'Se a guardado la historia exitosamente.'
+      });
 
-        }
+    }
 
 
   }
 
   async fotos({ response, request }) {
-    const {foto,id_negocio} = request.all();
+    const { foto, id_negocio } = request.all();
     const fotos = new Foto();
-    
+
 
     histori.foto = foto
     histori.id_negocio = id_negocio
-   
+
     await fotos.save()
     const historiaFound = await Historia.fotos("url_file", url_file);
-        if (!historiaFound) {
-          return response.send({
-            status: 400, message: 'Error al guardar la historia.'
-        });
-        }
-        else{
-          return response.send({
-            status: 202, message: 'Se a guardado la historia exitosamente.'
-        });
+    if (!historiaFound) {
+      return response.send({
+        status: 400, message: 'Error al guardar la historia.'
+      });
+    }
+    else {
+      return response.send({
+        status: 202, message: 'Se a guardado la historia exitosamente.'
+      });
 
-        }
+    }
 
-    
+
   }
 
   async comentarios({ response, request }) {
-    const {id_negocio} = request.all();
-    const negocio = await Negocio.findBy('id',id_negocio).with('comentarios.usuario');
-    
-    
-        if (!negocio) {
-          return response.send({
-            status: 400, message: 'No tiene comentarios'
+    const { id_negocio } = request.all();
+
+    try {
+      const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).fetch();
+      const count = await Negocio
+        .query()
+        .withCount('comentarios').where("id", id_negocio)
+        .fetch()
+      const asd =count.toJSON();
+   
+      console.log(asd[0]["__meta__"]["comentarios_count"]);
+      if (asd[0]["__meta__"]["comentarios_count"]==0) {
+        return response.send({
+          status: "ok", message: 'No tiene comentarios'
         });
-        }
-        else{
-          return response.status(200).send({ status:'ok', message:'Se elimino Se encontraron comentarios', data: menu })
-        
+      }
+      else {
+        return response.status(200).send({ status: 'ok', data: negocio })
+      }
 
-        }
+    } catch (error) {
+      return response.send({
+        status: "error", message: 'Hubo un error', error: error.message
+      });
 
-    
+    }
+
+
+
+
   }
 
 }
