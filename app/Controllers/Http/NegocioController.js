@@ -351,6 +351,7 @@ class NegocioController {
   async fotos({ response, request }) {
     const {foto,id_negocio} = request.all();
     const fotos = new Foto();
+    
 
     histori.foto = foto
     histori.id_negocio = id_negocio
@@ -366,6 +367,25 @@ class NegocioController {
           return response.send({
             status: 202, message: 'Se a guardado la historia exitosamente.'
         });
+
+        }
+
+    
+  }
+
+  async comentarios({ response, request }) {
+    const {id_negocio} = request.all();
+    const negocio = await Negocio.findBy('id',id_negocio).with('comentarios.usuario');
+    
+    
+        if (!negocio) {
+          return response.send({
+            status: 400, message: 'No tiene comentarios'
+        });
+        }
+        else{
+          return response.status(200).send({ status:'ok', message:'Se elimino Se encontraron comentarios', data: menu })
+        
 
         }
 

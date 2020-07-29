@@ -66,6 +66,7 @@ Route.group( () => {
   Route.get('obtenerNegocios', 'ConsultaController.obtenerNegocios');
   Route.get('top', 'ConsultaController.top');
   Route.get('cat', 'ConsultaController.cat');
+  Route.post('comentarios', 'ConsultaController.comentarios');
   Route.post('historia', 'ConsultaController.historia');
   Route.get('top5', 'ConsultaController.getTop5')
   Route.get('getTop5ByCategoria', 'ConsultaController.getTop5ByCategoria')
