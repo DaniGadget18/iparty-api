@@ -297,7 +297,9 @@ class NegocioController {
   }
 
   async comentarios({ response, request }) {
-    const { id_negocio } = request.all();
+    const { email } = request.all();
+
+    const id_negocio = await Manager.obteneridNegocio(email);
 
     try {
       const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).fetch();
@@ -306,7 +308,7 @@ class NegocioController {
         .withCount('comentarios').where("id", id_negocio)
         .fetch()
       const asd =count.toJSON();
-   
+
       console.log(asd[0]["__meta__"]["comentarios_count"]);
       if (asd[0]["__meta__"]["comentarios_count"]==0) {
         return response.send({
