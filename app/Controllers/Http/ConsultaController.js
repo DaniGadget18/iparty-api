@@ -1,9 +1,12 @@
 'use strict'
+
+const mongo_User = require("../../Models/test");
+
 const Negocio = use("App/Models/Negocios");
 const Categoria = use("App/Models/Categorias");
 const { validate } = use("Validator");
 const Comentario = use("App/Models/Comentario");
-const User_mongo = use("App/Models/mongo_User")
+const User_mongo = use("App/Models/test")
 
 
 class ConsultaController {
@@ -285,18 +288,6 @@ class ConsultaController {
       return response.status(200).send({ status: 'ok', error: e.message });
     }
   }
-
-  async test({ response }) {
-
-    try {
-
-      //const data = await
-      //return response.status(200).send({ status: 'ok', data: data });
-    } catch (e) {
-      return response.status(200).send({ status: 'ok', error: e.message });
-    }
-  }
-
 
 }
 
