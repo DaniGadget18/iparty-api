@@ -3,24 +3,28 @@
 const BaseModel = use('MongooseModel')
 
 /**
- * @class mongo_Message
+ * @class Message
  */
-class mongo_Message extends BaseModel {
+class Message extends BaseModel {
   static boot ({ schema }) {
     // Hooks:
     // this.addHook('preSave', () => {})
-    // this.addHook('preSave', 'mongo_MessageHook.method')
+    // this.addHook('preSave', 'MessageHook.method')
     // Indexes:
     // this.index({}, {background: true})
   }
   /**
-   * mongo_Message's schema
+   * Message's schema
    */
   static get schema () {
     return {
-
+      id_comverzacion: {type:Number, required:true},
+      id_usuario: {type:Number},
+      id_administrador:  {type:Number},
+      id_negocio:  {type:Number, required:true},
+      mensaje: {type:String, required:true},
     }
   }
 }
 
-module.exports = mongo_Message.buildModel('mongo_Message')
+module.exports = Message.buildModel('Message')

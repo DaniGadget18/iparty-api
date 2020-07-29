@@ -30,16 +30,22 @@ Route.group(() => {
 
 }).prefix('api/')
 
+Route.group( () => {
+  Route.get('obtenerNegocios', 'RootAdministradorController.obtenerNegocios');
+  Route.get('administradoresroot', 'RootAdministradorController.obtenerAdministradoresRoot');
+  Route.post('obtenerNegociobyid', 'RootAdministradorController.obtenerNegocioByID');
+  Route.post('registrarNegocio', 'RootAdministradorController.registrarNegocioLucid');
+  Route.post('registrarRoot', 'RootAdministradorController.registrarRoot');
+
+
+}).prefix('api/root/')
 
 
 
 Route.group( () => {
   // Negocios
-  Route.post('registrarNegocio', 'NegocioController.registrarNegocioLucid');
-  Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
-  Route.post('obtenerNegociobyid', 'NegocioController.obtenerNegocioByID');
 
   // Horarios negocio
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
