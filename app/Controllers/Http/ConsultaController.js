@@ -293,9 +293,9 @@ class ConsultaController {
     const { id_negocio, rank } = request.all();
     try {
       const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).where("calificacion", rank).fetch();
-      const count = await Negocio
+      const count = await Comentario
         .query()
-        .withCount('comentarios').where("id", id_negocio).where("calificacion", rank)
+        .withCount('usuario').where("id_negocio", id_negocio).where("calificacion", rank)
         .fetch()
       const asd =count.toJSON();
       console.log(asd[0]["__meta__"]["comentarios_count"]);
