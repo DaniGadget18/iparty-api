@@ -65,6 +65,10 @@ Route.group( () => {
   Route.post('obtenerMenuid', 'NegocioController.obtenerMenubyID');
   Route.post('eliminarProducto', 'NegocioController.eliminarProducto');
 
+  // Eventos negocio
+  Route.post('obtenerEventos', 'NegocioController.obtenerEventosNegocio');
+  Route.post('obtenerEventosFecha', 'NegocioController.obtenerEventosFecha');
+
 
   // consultas
   Route.get('top', 'ConsultaController.top');

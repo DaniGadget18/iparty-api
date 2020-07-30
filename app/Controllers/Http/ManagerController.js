@@ -41,6 +41,15 @@ class ManagerController {
     const data = comentario_usuario.toJSON();
     return data[0]["__meta__"]["comentarios_count"];
   }
+
+  static async CountEventos(id_negocio) {
+    const negocio_eventos = await Negocio
+      .query()
+      .withCount('eventos').where("id", id_negocio)
+      .fetch()
+    const data = negocio_eventos.toJSON();
+    return data[0]["__meta__"]["eventos_count"];
+  }
 }
 
 

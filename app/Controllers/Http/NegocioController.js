@@ -6,6 +6,7 @@ const Negocio = use("App/Models/Negocios");
 const CategoriaMenu = use("App/Models/Categoriamenu");
 const Historia = use("App/Models/Historia");
 const Comentario = use("App/Models/Comentario");
+const Evento = use("App/Models/Evento");
 const Manager = use("App/Controllers/Http/ManagerController");
 
 class NegocioController {
@@ -328,9 +329,35 @@ class NegocioController {
         return response.status(200).send({ status: 'ok', data: negocio })
       }
     } catch (error) {
-      return response.send({
-        status: "error", message: 'Hubo un error', error: error.message
-      });
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async obtenerEventosNegocio({request, response }) {
+    const { email } = request.all();
+
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const eventos = await Evento.query().where('id_negocio', id_negocio).fetch();
+      return response.status(200).send({ status: 'ok', data: eventos })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async obtenerEventosFecha({request, response }) {
+    const { email, fecha } = request.all();
+
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const count = await Manager.CountEventos(id_negocio);
+      if (count == 0) {
+        return response.status(200).send({ status: 'ok', data: [], messages:"No hay comentarios" })
+      }
+      const eventos = await Evento.query().where('id_negocio', id_negocio).where('fecha', fecha).fetch();
+      return response.status(200).send({ status: 'ok', data: eventos })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
     }
   }
 
