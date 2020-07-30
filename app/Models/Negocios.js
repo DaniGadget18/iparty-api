@@ -29,6 +29,9 @@ class Negocios extends Model {
   historias() {
     return this.hasMany( 'App/Models/Historia', 'id', 'id_negocio')
   }
+  eventos(){
+    return this.hasMany('App/Models/Evento', 'id', 'id_negocio')
+  }
 }
 
 module.exports = Negocios
