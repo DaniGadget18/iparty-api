@@ -36,7 +36,7 @@ class SesionController {
 
             const token = await auth.attempt(email, password);
             const allData = await Database
-                        .select('users.nombre', 'negocios.nombre as negocio', 'roles.rol', 'roots.id as root_id')
+                        .select('negocios.id as id','users.nombre', 'negocios.nombre as negocio', 'roles.rol', 'roots.id as root_id')
                         .table('users')
                         .where('users.email', email)
                         .leftJoin('administradores', 'users.id', 'administradores.id_usuario')

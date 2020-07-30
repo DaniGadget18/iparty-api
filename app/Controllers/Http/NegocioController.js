@@ -274,11 +274,8 @@ class NegocioController {
   async fotos({ response, request }) {
     const { foto, id_negocio } = request.all();
     const fotos = new Foto();
-
-
     histori.foto = foto
     histori.id_negocio = id_negocio
-
     await fotos.save()
     const historiaFound = await Historia.fotos("url_file", url_file);
     if (!historiaFound) {
@@ -292,25 +289,15 @@ class NegocioController {
       });
 
     }
-
-
   }
 
   async comentarios({ response, request }) {
     const { email } = request.all();
-
     const id_negocio = await Manager.obteneridNegocio(email);
-
     try {
       const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).fetch();
-      const count = await Negocio
-        .query()
-        .withCount('comentarios').where("id", id_negocio)
-        .fetch()
-      const asd =count.toJSON();
-
-      console.log(asd[0]["__meta__"]["comentarios_count"]);
-      if (asd[0]["__meta__"]["comentarios_count"]==0) {
+      const count = await Manager.countComentarios( id_negocio )
+      if (count === 0) {
         return response.send({
           status: "ok", message: 'No tiene comentarios'
         });
@@ -318,17 +305,33 @@ class NegocioController {
       else {
         return response.status(200).send({ status: 'ok', data: negocio })
       }
-
     } catch (error) {
       return response.send({
         status: "error", message: 'Hubo un error', error: error.message
       });
-
     }
+  }
 
+  async comentariosranked({ response, request }) {
+    const { email, rank } = request.all();
 
-
-
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).where("calificacion", rank).fetch();
+      const count = await Manager.CountRank(id_negocio, rank);
+      if (count === 0) {
+        return response.send({
+          status: "ok", message: 'No tiene comentarios'
+        });
+      }
+      else {
+        return response.status(200).send({ status: 'ok', data: negocio })
+      }
+    } catch (error) {
+      return response.send({
+        status: "error", message: 'Hubo un error', error: error.message
+      });
+    }
   }
 
 }

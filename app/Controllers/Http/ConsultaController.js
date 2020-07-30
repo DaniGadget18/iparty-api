@@ -289,30 +289,7 @@ class ConsultaController {
     }
   }
 
-  async comentariosranked({ response, request }) {
-    const { id_negocio, rank } = request.all();
-    try {
-      const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).where("calificacion", rank).fetch();
-      const count = await Comentario
-        .query()
-        .withCount('usuario').where("id_negocio", id_negocio).where("calificacion", rank)
-        .fetch()
-      const asd =count.toJSON();
-      console.log(asd[0]["__meta__"]["comentarios_count"]);
-      if (asd[0]["__meta__"]["comentarios_count"]==0) {
-        return response.send({
-          status: "ok", message: 'No tiene comentarios'
-        });
-      }
-      else {
-        return response.status(200).send({ status: 'ok', data: negocio })
-      }
-    } catch (error) {
-      return response.send({
-        status: "error", message: 'Hubo un error', error: error.message
-      });
-    }
-  }
+
 
 }
 
