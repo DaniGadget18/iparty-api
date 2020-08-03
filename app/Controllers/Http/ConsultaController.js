@@ -62,7 +62,7 @@ class ConsultaController {
       .with('negocios.menu.categoria')
       .fetch();
     //const negocios = await Negocio.find(15);
-    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
+    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu.categoria').fetch();
     //const comentarios = await comentario.profile().first();
     return response.status(200).send({ message: 'Negocio editado con exito', data: categorias })
 
@@ -74,7 +74,7 @@ class ConsultaController {
       .with('negocios.categoria_negocio')
       .fetch();*/
     //const negocios = await Negocio.find(15);
-    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu').fetch();
+    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu.categoria').fetch();
     //const comentarios = await comentario.profile().first();
 
     return response.status(200).send({ message: 'HOLI', data: myObj })
@@ -91,7 +91,7 @@ class ConsultaController {
         .with('fotos')
         .with('horarios')
         .with('eventos')
-        .with('menu')
+        .with('menu.categoria')
         .with('historias.usuario')
         .with('comentarios.usuario')
         .orderBy('popularidad', 'desc')
@@ -113,7 +113,7 @@ class ConsultaController {
       .with('fotos')
       .with('horarios')
       .with('eventos')
-      .with('menu')
+      .with('menu.categoria')
       .with('historias.usuario')
       .with('comentarios.usuario')
       .where('id_categoria', request.body['id_categoria'])
@@ -173,7 +173,7 @@ class ConsultaController {
       .with('fotos')
       .with('horarios')
       .with('eventos')
-      .with('menu')
+      .with('menu.categoria')
       .with('historias.usuario')
       .with('comentarios.usuario')
       .where('nombre', 'LIKE', '%' + request.body['data'] + '%')
@@ -194,7 +194,7 @@ class ConsultaController {
         .with('fotos')
         .with('horarios')
         .with('eventos')
-        .with('menu')
+        .with('menu.categoria')
         .with('historias.usuario')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%bar%')
@@ -215,7 +215,7 @@ class ConsultaController {
         .with('fotos')
         .with('horarios')
         .with('eventos')
-        .with('menu')
+        .with('menu.categoria')
         .with('historias.usuario')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%antro%')
@@ -237,7 +237,7 @@ class ConsultaController {
         .with('fotos')
         .with('horarios')
         .with('eventos')
-        .with('menu')
+        .with('menu.categoria')
         .with('historias.usuario')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%cantina%')
@@ -258,7 +258,7 @@ class ConsultaController {
         .with('fotos')
         .with('horarios')
         .with('eventos')
-        .with('menu')
+        .with('menu.categoria')
         .with('historias.usuario')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%billar%')
@@ -281,7 +281,7 @@ class ConsultaController {
         .with('fotos')
         .with('horarios')
         .with('eventos')
-        .with('menu')
+        .with('menu.categoria')
         .with('historias.usuario')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%club%')
