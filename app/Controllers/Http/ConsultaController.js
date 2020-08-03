@@ -1,4 +1,5 @@
 'use strict'
+
 const Negocio = use("App/Models/Negocios");
 const Categoria = use("App/Models/Categorias");
 const { validate } = use("Validator");
@@ -82,19 +83,25 @@ class ConsultaController {
 
   async getTop5({ response }) {
 
-    const data = await Negocio
-      .query()
-      .with('categoria_negocio')
-      .with('fotos')
-      .with('horarios')
-      .with('menu.categoria')
-      .with('historias.usuario')
-      .with('comentarios')
-      .with('comentarios.usuario')
-      .orderBy('popularidad', 'desc')
-      .limit(5)
-      .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
+    try {
+
+      const data = await Negocio
+        .query()
+        .with('categoria_negocio')
+        .with('fotos')
+        .with('horarios')
+        .with('eventos')
+        .with('menu')
+        .with('historias.usuario')
+        .with('comentarios.usuario')
+        .orderBy('popularidad', 'desc')
+        .limit(5)
+        .fetch()
+      return response.status(200).send({ status: 'ok', data: data });
+
+    } catch (error) {
+      return response.status(200).send({ status: 'error', error: error.message });
+    }
 
   }
 
@@ -105,9 +112,9 @@ class ConsultaController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
+      .with('eventos')
       .with('menu')
-      .with('historias')
-      .with('comentarios')
+      .with('historias.usuario')
       .with('comentarios.usuario')
       .where('id_categoria', request.body['id_categoria'])
       .orderBy('popularidad', 'desc')
@@ -165,9 +172,9 @@ class ConsultaController {
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
+      .with('eventos')
       .with('menu')
-      .with('historias')
-      .with('comentarios')
+      .with('historias.usuario')
       .with('comentarios.usuario')
       .where('nombre', 'LIKE', '%' + request.body['data'] + '%')
       .orWhere('ubicacion', 'LIKE', '%' + request.body['data'] + '%')
@@ -186,9 +193,9 @@ class ConsultaController {
         .with('categoria_negocio')
         .with('fotos')
         .with('horarios')
-        .with('menu.categoria')
+        .with('eventos')
+        .with('menu')
         .with('historias.usuario')
-        .with('comentarios')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%bar%')
         .fetch()
@@ -207,9 +214,9 @@ class ConsultaController {
         .with('categoria_negocio')
         .with('fotos')
         .with('horarios')
-        .with('menu.categoria')
+        .with('eventos')
+        .with('menu')
         .with('historias.usuario')
-        .with('comentarios')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%antro%')
         .fetch()
@@ -229,9 +236,9 @@ class ConsultaController {
         .with('categoria_negocio')
         .with('fotos')
         .with('horarios')
-        .with('menu.categoria')
+        .with('eventos')
+        .with('menu')
         .with('historias.usuario')
-        .with('comentarios')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%cantina%')
         .fetch()
@@ -250,9 +257,9 @@ class ConsultaController {
         .with('categoria_negocio')
         .with('fotos')
         .with('horarios')
-        .with('menu.categoria')
+        .with('eventos')
+        .with('menu')
         .with('historias.usuario')
-        .with('comentarios')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%billar%')
         .fetch()
@@ -273,9 +280,9 @@ class ConsultaController {
         .with('categoria_negocio')
         .with('fotos')
         .with('horarios')
-        .with('menu.categoria')
+        .with('eventos')
+        .with('menu')
         .with('historias.usuario')
-        .with('comentarios')
         .with('comentarios.usuario')
         .where('categorias.categoria', 'LIKE', '%club%')
         .fetch()
@@ -283,9 +290,8 @@ class ConsultaController {
     } catch (e) {
       return response.status(200).send({ status: 'ok', error: e.message });
     }
-
-
   }
+
 
 
 }

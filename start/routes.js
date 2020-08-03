@@ -30,16 +30,22 @@ Route.group(() => {
 
 }).prefix('api/')
 
+Route.group( () => {
+  Route.get('obtenerNegocios', 'RootAdministradorController.obtenerNegocios');
+  Route.get('administradoresroot', 'RootAdministradorController.obtenerAdministradoresRoot');
+  Route.post('obtenerNegociobyid', 'RootAdministradorController.obtenerNegocioByID');
+  Route.post('registrarNegocio', 'RootAdministradorController.registrarNegocioLucid');
+  Route.post('registrarRoot', 'RootAdministradorController.registrarRoot');
+
+
+}).prefix('api/root/')
 
 
 
 Route.group( () => {
   // Negocios
-  Route.post('registrarNegocio', 'NegocioController.registrarNegocioLucid');
-  Route.get('obtenerNegocios', 'NegocioController.obtenerNegocios');
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
-  Route.post('obtenerNegociobyid', 'NegocioController.obtenerNegocioByID');
 
   // Horarios negocio
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
@@ -59,13 +65,18 @@ Route.group( () => {
   Route.post('obtenerMenuid', 'NegocioController.obtenerMenubyID');
   Route.post('eliminarProducto', 'NegocioController.eliminarProducto');
 
+  // Eventos negocio
+  Route.post('obtenerEventos', 'NegocioController.obtenerEventosNegocio');
+  Route.post('obtenerEventosFecha', 'NegocioController.obtenerEventosFecha');
+
 
   // consultas
   Route.get('top', 'ConsultaController.top');
-  Route.post('registrarNegocio', 'ConsultaController.registrarNegocio');
-  Route.get('obtenerNegocios', 'ConsultaController.obtenerNegocios');
+  Route.get('test', 'ConsultaController.test');
   Route.get('top', 'ConsultaController.top');
   Route.get('cat', 'ConsultaController.cat');
+  Route.post('comentariosranked', 'NegocioController.comentariosranked');
+  Route.post('comentarios', 'NegocioController.comentarios');
   Route.post('historia', 'ConsultaController.historia');
   Route.get('top5', 'ConsultaController.getTop5')
   Route.get('getTop5ByCategoria', 'ConsultaController.getTop5ByCategoria')

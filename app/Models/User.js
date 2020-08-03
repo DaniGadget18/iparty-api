@@ -45,7 +45,10 @@ class User extends Model {
   }
 
   historias() {
-    return this.hasMany( 'App/Models/Historia', 'id', 'id_usuario')
+    return this.hasMany( 'App/Models/Historia', 'id', 'id_usuario');
+  }
+  root() {
+    return this.hasOne('App/Models/Root', 'id', 'id_usuario');
   }
 }
 
