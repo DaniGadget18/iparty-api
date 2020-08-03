@@ -65,14 +65,17 @@ Route.group( () => {
   Route.post('obtenerMenuid', 'NegocioController.obtenerMenubyID');
   Route.post('eliminarProducto', 'NegocioController.eliminarProducto');
 
+  // Eventos negocio
+  Route.post('obtenerEventos', 'NegocioController.obtenerEventosNegocio');
+  Route.post('obtenerEventosFecha', 'NegocioController.obtenerEventosFecha');
+
 
   // consultas
   Route.get('top', 'ConsultaController.top');
-  Route.post('registrarNegocio', 'ConsultaController.registrarNegocio');
-  Route.get('obtenerNegocios', 'ConsultaController.obtenerNegocios');
+  Route.get('test', 'ConsultaController.test');
   Route.get('top', 'ConsultaController.top');
   Route.get('cat', 'ConsultaController.cat');
-  Route.post('comentariosranked', 'ConsultaController.comentariosranked');
+  Route.post('comentariosranked', 'NegocioController.comentariosranked');
   Route.post('comentarios', 'NegocioController.comentarios');
   Route.post('historia', 'ConsultaController.historia');
   Route.get('top5', 'ConsultaController.getTop5')
