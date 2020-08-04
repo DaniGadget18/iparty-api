@@ -201,7 +201,7 @@ class ConsultaController {
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
-      return response.status(200).send({ status: 'ok', error: e.message });
+      return response.status(400).send({ status: 'error', error: e.message });
     }
   }
   async getAntros({ response }) {
@@ -222,7 +222,7 @@ class ConsultaController {
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
-      return response.status(200).send({ status: 'ok', error: e.message });
+      return response.status(400).send({ status: 'error', error: e.message });
     }
   }
 
@@ -244,7 +244,7 @@ class ConsultaController {
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
-      return response.status(200).send({ status: 'ok', error: e.message });
+      return response.status(400).send({ status: 'error', error: e.message });
     }
   }
 
@@ -265,7 +265,7 @@ class ConsultaController {
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
-      return response.status(200).send({ status: 'ok', error: e.message });
+      return response.status(400).send({ status: 'error', error: e.message });
     }
   }
 
@@ -288,11 +288,44 @@ class ConsultaController {
         .fetch()
       return response.status(200).send({ status: 'ok', data: data });
     } catch (e) {
-      return response.status(200).send({ status: 'ok', error: e.message });
+      return response.status(400).send({ status: 'error', error: e.message });
     }
   }
 
+  async getFavs({ request, response }) {
+    const {array} = request.body;
+    const data = [];
 
+    try {
+
+      for(let i in array){
+        console.log(i)
+        const result = await Negocio
+          .query()
+          .with('categoria_negocio')
+          .with('fotos')
+          .with('horarios')
+          .with('eventos')
+          .with('menu.categoria')
+          .with('historias.usuario')
+          .with('comentarios.usuario')
+          .where('id', array[i])
+          .fetch()
+
+         const auxi = result.toJSON()
+
+        data.push(auxi[0])
+      }
+
+      return response.status(200).send({ status: 'ok', data:data });
+    } catch (e) {
+      return response.status(400).send({ status: 'error', error: e.message });
+    }
+  }
+
+  async callba({ request, response }){
+
+  }
 
 }
 
