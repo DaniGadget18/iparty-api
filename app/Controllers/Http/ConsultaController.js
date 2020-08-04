@@ -170,7 +170,8 @@ class ConsultaController {
 
     const resul = await Negocio
       .query()
-      .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .innerJoin('categorias', 'categorias.id', 'negocios.id_categoria')
+      .select('negocios.id' ,'id_categoria','nombre', 'foto', 'ubicacion', 'informacion', 'lat', 'lng', 'popularidad', 'negocios.created_at', 'negocios.updated_at')
       .with('categoria_negocio')
       .with('fotos')
       .with('horarios')
