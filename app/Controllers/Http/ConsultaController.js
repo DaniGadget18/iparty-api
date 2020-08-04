@@ -166,7 +166,9 @@ class ConsultaController {
 
   async getBusqueda({ request, response }) {
 
-    const data = await Negocio
+    const { data } = request.all()
+
+    const resul = await Negocio
       .query()
       .leftJoin('categorias', 'categorias.id', 'negocios.id_categoria')
       .with('categoria_negocio')
@@ -176,11 +178,11 @@ class ConsultaController {
       .with('menu.categoria')
       .with('historias.usuario')
       .with('comentarios.usuario')
-      .where('nombre', 'LIKE', '%' + request.body['data'] + '%')
-      .orWhere('ubicacion', 'LIKE', '%' + request.body['data'] + '%')
-      .orWhere('categorias.categoria', 'LIKE', '%' + request.body['data'] + '%')
+      .where('nombre', 'LIKE', '%' + data + '%')
+      .orWhere('ubicacion', 'LIKE', '%' + data + '%')
+      .orWhere('categorias.categoria', 'LIKE', '%' + data + '%')
       .fetch()
-    return response.status(200).send({ status: 'ok', data: data });
+    return response.status(200).send({ status: 'ok', data: resul });
   }
 
   async getBares({ response }) {

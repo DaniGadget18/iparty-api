@@ -81,7 +81,7 @@ Route.group( () => {
   Route.get('top5', 'ConsultaController.getTop5')
   Route.get('getTop5ByCategoria', 'ConsultaController.getTop5ByCategoria')
   Route.post('createComentario', 'ConsultaController.createComentario')
-  Route.get('buscador', 'ConsultaController.getBusqueda')
+  Route.post('buscador', 'ConsultaController.getBusqueda')
   Route.get('Bares', 'ConsultaController.getBares')
   Route.get('Antros', 'ConsultaController.getAntros')
   Route.get('Cantinas', 'ConsultaController.getCantinas')
