@@ -120,6 +120,13 @@ class SesionController {
         return response.status(200).send({message:'usuario encontrado', data:userr})
     }
 
+    static async info(email) {
+
+      const userr =await User.findBy("email", email);
+
+      return userr;
+  }
+
     async logout({auth, response}){
       await auth.logout()
       return response.status(200).send({message:'Hata la proxima.'})

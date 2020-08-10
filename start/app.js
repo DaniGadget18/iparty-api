@@ -19,7 +19,8 @@ const providers = [
   '@adonisjs/validator/providers/ValidatorProvider',
   '@adonisjs/mail/providers/MailProvider',
   '@adonisjs/framework/providers/ViewProvider',
-  'adonis-mongoose-model/providers/MongooseProvider'
+  'adonis-mongoose-model/providers/MongooseProvider',
+  '@adonisjs/websocket/providers/WsProvider'
 ]
 
 /*
