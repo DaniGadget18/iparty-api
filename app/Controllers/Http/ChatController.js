@@ -1,4 +1,3 @@
-'use strict'
 const Mensages = use("App/Models/mongo_Message");
 
 class ChatController {

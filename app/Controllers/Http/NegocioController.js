@@ -7,10 +7,23 @@ const CategoriaMenu = use("App/Models/Categoriamenu");
 const Historia = use("App/Models/Historia");
 const Comentario = use("App/Models/Comentario");
 const Evento = use("App/Models/Evento");
+const Reservacion = use("App/Models/Reservacion");
 const Manager = use("App/Controllers/Http/ManagerController");
 const Reservacion = use("App/Models/Reservacion");
 
 class NegocioController {
+
+
+  async existeNegocio({request, response}) {
+    const { nombre } = request.all();
+    try {
+      const nombrenegocio = await Negocio.findBy ('nombre', nombre)
+      response.status(200).send({'status':'ok', data:nombrenegocio })
+    } catch (error) {
+      response.status(400).send({'status':'error', message:'Ocurrio un error', type:error.message })
+    }
+
+  }
 
   async obtenerNegocioByEmail({ request, response }) {
     const { email } = request.all();
@@ -296,6 +309,12 @@ class NegocioController {
   async comentarios({ response, request }) {
     const { email } = request.all();
     const id_negocio = await Manager.obteneridNegocio(email);
+    const validation = await validate(request.all(), {
+      email: 'required | email'
+    });
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
     try {
       const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).fetch();
       const count = await Manager.countComentarios( id_negocio )
@@ -316,7 +335,14 @@ class NegocioController {
 
   async comentariosranked({ response, request }) {
     const { email, rank } = request.all();
+    const validation = await validate(request.all(), {
+      email: 'required | email',
+      rank: 'required',
+    });
 
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
     try {
       const id_negocio = await Manager.obteneridNegocio(email);
       const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).where("calificacion", rank).fetch();
@@ -336,7 +362,13 @@ class NegocioController {
 
   async obtenerEventosNegocio({request, response }) {
     const { email } = request.all();
+    const validation = await validate(request.all(), {
+      email: 'required | email'
+    });
 
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
     try {
       const id_negocio = await Manager.obteneridNegocio(email);
       const eventos = await Evento.query().where('id_negocio', id_negocio).fetch();
@@ -348,6 +380,15 @@ class NegocioController {
 
   async obtenerEventosFecha({request, response }) {
     const { email, fecha } = request.all();
+
+    const validation = await validate(request.all(), {
+      email: 'required | email',
+      fecha: 'required',
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
 
     try {
       const id_negocio = await Manager.obteneridNegocio(email);
@@ -407,6 +448,132 @@ class NegocioController {
       return response.status(200).send({ message: 'Reservavion cancelada con exito', data: reservacion })
     } catch (error) {
       return response.status(400).send({ message: 'algo salio mal', error: error })
+    }
+  }
+  async obteneridnombrenegocio({request, response}) {
+    const { email } = request.all();
+    const validation = await validate(request.all(), {
+      email: 'required | email',
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const negocio = await Negocio.query().with('usuario').where('id', id_negocio).fetch();
+      const data = negocio.toJSON();
+      return response.status(200).send({ status: 'ok', data: negocio, room:data[0].id +data[0].nombre })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async registrarEventoNegocio({request, response}) {
+    const { email, nombre, fecha, foto, informacion } = request.all();
+    const validation = await validate(request.all(), {
+      email: 'required | email',
+      nombre: 'required',
+      fecha: 'required',
+      foto: 'required',
+      informacion: 'required'
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const negocio = await Negocio.find(id_negocio);
+      const evento = await negocio.eventos()
+        .create({
+          informacion,
+          nombre,
+          fecha,
+          foto,
+        });
+      return response.status(200).send({ status: 'ok', message:'Se registro correctamente el evento', data: evento })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async obtenerEventoById({request, response}) {
+    const {id}  = request.all();
+    const validation = await validate(request.all(), {
+      id: 'required'
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+    try {
+      const evento = await Evento.find(id)
+      return response.status(200).send({ status: 'ok', data: evento })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async editarEvento({request, response}) {
+    const { id, nombre, fecha, foto, informacion } = request.all();
+    const validation = await validate(request.all(), {
+      id: 'required',
+      nombre: 'required',
+      fecha: 'required',
+      foto: 'required',
+      informacion: 'required'
+    });
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+    try {
+      const evento = await Evento.find(id);
+      const data = evento.update({
+        nombre,
+        fecha,
+        informacion,
+        foto
+      });
+      return response.status(200).send({ status: 'ok', message: 'Se elimino correctamente el evento' })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async eliminarEvento({request, response}) {
+    const {id}  = request.all();
+    const validation = await validate(request.all(), {
+      id: 'required'
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+    try {
+      const evento = await Evento.find(id);
+      const data = evento.delete();
+      return response.status(200).send({ status: 'ok', message: 'Se elimino correctamente el evento' })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async obtenerReservaciones({request, response}) {
+    const { email }  = request.all();
+    const validation = await validate(request.all(), {
+      email: 'required | email'
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const reservaciones = await Reservacion.query().with('usuario').where('id_negocio', id_negocio).fetch();
+      return response.status(200).send({ status:'ok', data: reservaciones })
+    } catch (error) {
+      return response.status(400).send({ status:'error', message: 'Hubo un error', type: error.message })
     }
   }
 

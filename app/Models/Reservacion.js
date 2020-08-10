@@ -10,6 +10,7 @@ class Reservacion extends Model {
   negocio() {
     return this.belongsTo('App/Models/Negocio', 'id_negocio', 'id')
   }
+
   usuario(){
     return this.belongsTo('App/Models/User', 'id_usuario', 'id')
   }
