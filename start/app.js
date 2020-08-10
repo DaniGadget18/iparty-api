@@ -20,7 +20,7 @@ const providers = [
   '@adonisjs/mail/providers/MailProvider',
   '@adonisjs/framework/providers/ViewProvider',
   'adonis-mongoose-model/providers/MongooseProvider',
-  '@adonisjs/websocket/providers/WsProvider'
+  //'@adonisjs/websocket/providers/WsProvider'
 ]
 
 /*

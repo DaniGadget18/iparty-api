@@ -15,12 +15,12 @@ const SesionController = require("../app/Controllers/Http/SesionController")
 |
 */
 
-const Ws = use('Ws')
+/*const Ws = use('Ws')
 const server = use('Server')
 const io = use('socket.io')(server.getInstance())
 const WSController = use('App/Controllers/Http/ChatController')
 io.on('connection', function (socket) {
     WSController.goChat(socket, io)
-   });
+   });*/
 
 

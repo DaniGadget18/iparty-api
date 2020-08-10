@@ -7,7 +7,6 @@ const CategoriaMenu = use("App/Models/Categoriamenu");
 const Historia = use("App/Models/Historia");
 const Comentario = use("App/Models/Comentario");
 const Evento = use("App/Models/Evento");
-const Reservacion = use("App/Models/Reservacion");
 const Manager = use("App/Controllers/Http/ManagerController");
 const Reservacion = use("App/Models/Reservacion");
 
