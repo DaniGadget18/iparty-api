@@ -50,6 +50,20 @@ class ManagerController {
     const data = negocio_eventos.toJSON();
     return data[0]["__meta__"]["eventos_count"];
   }
+
+  static async isRoot( email ) {
+    const root = await User.query().withCount('root').where('email', email).fetch();
+    const data = root.toJSON()
+
+    return data[0]['__meta__'].root_count;
+  }
+
+  static async idNegocioOnline(email) {
+    const admin = await User.query().with('administradores').where('email', email).fetch();
+    const data = admin.toJSON();
+    return data[0].administradores[0].id + data[0].administradores[0].nombre;
+  }
+
 }
 
 

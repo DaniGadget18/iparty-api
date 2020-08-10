@@ -1,6 +1,7 @@
 'use strict'
 const { validate } = use("Validator");
 const User = use("App/Models/User");
+const Manager = use("App/Controllers/Http/ManagerController");
 const Root = use("App/Models/Root");
 const Database = use("Database");
 const Hash = use('Hash')
@@ -17,37 +18,33 @@ class SesionController {
         });
 
         if (validation.fails()) {
-            return response.send({status:202, message: validation.messages() });
+          return response.status(400).send({ status:'error', type: validation.message(), message:"Falta algun campo" });
         }
 
         const userFound = await User.findBy("email", email);
         if (!userFound) {
-            return response.send({status:400, message: "No existe este usuario" });
+          return response.status(400).send({ status:'error', message: 'Usuario no existe' });
         }
 
         if(userFound){
-          const isSame = Hash.verify(password, userFound.password);
+          const isSame = await Hash.verify(password, userFound.password);
           if (!isSame) {
-              return response.send({status:201, message:"Contraseña incorrecta"});
+            return response.status(400).send({ status:'error', message: 'Contraseña incorrecta' });
           }
         }
 
         try {
-
             const token = await auth.attempt(email, password);
-            const allData = await Database
-                        .select('negocios.id as id','users.nombre', 'negocios.nombre as negocio', 'roles.rol', 'roots.id as root_id')
-                        .table('users')
-                        .where('users.email', email)
-                        .leftJoin('administradores', 'users.id', 'administradores.id_usuario')
-                        .leftJoin('negocios', 'administradores.id_negocio', 'negocios.id')
-                        .leftJoin('roles', 'administradores.id_rol', 'roles.id')
-                        .leftJoin('roots', 'users.id', 'roots.id_usuario');
-                        console.log(allData);
-            return response.send({status:200, 'message': "ok", data: { token, email, allData} });
+            const accessOnline = await Manager.idNegocioOnline(email);
+            const root = await Manager.isRoot(email);
+            if (root > 0){
+              return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
+            } else {
+              return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
+            }
 
         } catch (error) {
-            return response.send({ status: 202, message: error });
+            return response.status(400).send({ status:'error', message: error.message });
         }
     }
 
