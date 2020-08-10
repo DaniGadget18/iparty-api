@@ -69,6 +69,9 @@ Route.group( () => {
   Route.post('obtenerEventos', 'NegocioController.obtenerEventosNegocio');
   Route.post('obtenerEventosFecha', 'NegocioController.obtenerEventosFecha');
 
+  // Reservaciones
+  Route.post('updateReservacion', 'NegocioController.updateReservacion');
+  Route.post('cancelarReservacion', 'NegocioController.cancelarReservacion');
 
   // consultas
   Route.get('top', 'ConsultaController.top');

@@ -8,6 +8,7 @@ const Historia = use("App/Models/Historia");
 const Comentario = use("App/Models/Comentario");
 const Evento = use("App/Models/Evento");
 const Manager = use("App/Controllers/Http/ManagerController");
+const Reservacion = use("App/Models/Reservacion");
 
 class NegocioController {
 
@@ -358,6 +359,54 @@ class NegocioController {
       return response.status(200).send({ status: 'ok', data: eventos })
     } catch (error) {
       return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async updateReservacion({ request, response }) {
+    const {id, id_usuario, id_negocio, dia, confirmacion, personas, zona } = request.all();
+
+    const validation = await validate(request.all(), {
+      id: 'required',
+      id_usuario: 'required',
+      id_negocio: 'required',
+      dia: 'required',
+      confirmacion: 'required',
+      personas: 'required',
+      zona: 'required',
+
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ message: validation.messages(), error: "Falta algun campo" })
+    }
+
+    try {
+
+      const reservacion = await Reservacion.query().where('id', id).update({
+        id_usuario: id_usuario,
+        id_negocio: id_negocio,
+        dia: dia,
+        confirmacion: confirmacion,
+        personas: personas,
+        zona: zona,
+      });
+      return response.status(200).send({ message: 'Reservavion editada con exito', data: reservacion })
+    } catch (error) {
+      return response.status(400).send({ message: 'algo salio mal', error: error })
+    }
+  }
+
+  async cancelarReservacion({ request, response }) {
+    const { id } = request.all();
+
+    try {
+
+      const reservacion = await Reservacion.query().where('id', id).update({
+        confirmacion: "CANCELADO",
+      });
+      return response.status(200).send({ message: 'Reservavion cancelada con exito', data: reservacion })
+    } catch (error) {
+      return response.status(400).send({ message: 'algo salio mal', error: error })
     }
   }
 
