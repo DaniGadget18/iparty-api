@@ -34,14 +34,15 @@ class SesionController {
         }
 
         try {
-            const token = await auth.attempt(email, password);
-            const accessOnline = await Manager.idNegocioOnline(email);
-            const root = await Manager.isRoot(email);
-            if (root > 0){
-              return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
-            } else {
-              return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
-            }
+
+          const accessOnline = await Manager.idNegocioOnline(email);
+          const token = await auth.attempt(email, password);
+          const root = await Manager.isRoot(email);
+          if (root > 0){
+            return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
+          } else {
+            return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
+          }
 
         } catch (error) {
             return response.status(400).send({ status:'error', message: error.message });
