@@ -36,6 +36,7 @@ Route.group( () => {
   Route.post('obtenerNegociobyid', 'RootAdministradorController.obtenerNegocioByID');
   Route.post('registrarNegocio', 'RootAdministradorController.registrarNegocioLucid');
   Route.post('registrarRoot', 'RootAdministradorController.registrarRoot');
+  Route.post('existeNegocio', 'NegocioController.existeNegocio');
 
 
 }).prefix('api/root/')
@@ -44,6 +45,7 @@ Route.group( () => {
 
 Route.group( () => {
   // Negocios
+  Route.post('obteneridnombrenegocio', 'NegocioController.obteneridnombrenegocio');
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
 
@@ -68,7 +70,13 @@ Route.group( () => {
   // Eventos negocio
   Route.post('obtenerEventos', 'NegocioController.obtenerEventosNegocio');
   Route.post('obtenerEventosFecha', 'NegocioController.obtenerEventosFecha');
+  Route.post('registrarEvento', 'NegocioController.registrarEventoNegocio');
+  Route.post('eliminarEvento', 'NegocioController.eliminarEvento');
+  Route.post('editarEvento', 'NegocioController.editarEvento');
+  Route.post('obtenerEvento', 'NegocioController.obtenerEventoById');
 
+  // Reservaciones negocio
+  Route.post('obtenerReservaciones', 'NegocioController.obtenerReservaciones');
 
   // consultas
   Route.get('top', 'ConsultaController.top');
