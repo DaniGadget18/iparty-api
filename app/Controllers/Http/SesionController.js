@@ -36,12 +36,12 @@ class SesionController {
         try {
 
           const accessOnline = await Manager.idNegocioOnline(email);
-          const token = await auth.attempt(email, password);
+          const token = await auth.withRefreshToken().attempt(email, password);
           const root = await Manager.isRoot(email);
           if (root > 0){
-            return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
+            return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: true });
           } else {
-            return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: root });
+            return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: false });
           }
 
         } catch (error) {
@@ -125,11 +125,28 @@ class SesionController {
       const userr =await User.findBy("email", email);
 
       return userr;
-  }
+    }
 
     async logout({auth, response}){
       await auth.logout()
       return response.status(200).send({message:'Hata la proxima.'})
+    }
+
+    async checkAuth({ response, request, auth }) {
+      const token = request.header('Authorization');
+      console.log(token);
+      try {
+        await auth.check();
+        const nowUser = await auth.getUser();
+        const root = await Manager.isRoot(nowUser.email);
+        if (root > 0) {
+          return response.status(200).send({status:'ok', data: nowUser, isRoot: true });
+        } else {
+          return response.status(200).send({status:'ok', data: nowUser, isRoot: false });
+        }
+      } catch (error) {
+        response.status(200).send({status:'error', error: error.message})
+      }
     }
 
 }
