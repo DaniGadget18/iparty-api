@@ -45,7 +45,7 @@ Route.group( () => {
 Route.group( () => {
   Route.post('reservaciones', 'UsuarioController.getReservaciones');
 
-}).prefix('api/usuario/')
+}).prefix('api/usuario/').middleware('checktoken');
 
 Route.group( () => {
   // Negocios
