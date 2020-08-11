@@ -63,7 +63,7 @@ class ManagerController {
     const data1 = isAdmin.toJSON()
     if (data1[0]['__meta__'].administradores_count === 0){
       return null
-    };
+    }
     const admin = await User.query().with('administradores').where('email', email).fetch();
     const data = admin.toJSON();
     return data[0].administradores[0].id + data[0].administradores[0].nombre;
