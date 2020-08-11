@@ -326,10 +326,6 @@ class ConsultaController {
     }
   }
 
-  async callba({ request, response }){
-
-  }
-
 }
 
 module.exports = ConsultaController

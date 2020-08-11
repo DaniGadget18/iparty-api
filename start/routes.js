@@ -41,7 +41,10 @@ Route.group( () => {
 
 }).prefix('api/root/')
 
+Route.group( () => {
+  Route.post('reservaciones', 'UsuarioController.getReservaciones');
 
+}).prefix('api/usuario/')
 
 Route.group( () => {
   // Negocios
