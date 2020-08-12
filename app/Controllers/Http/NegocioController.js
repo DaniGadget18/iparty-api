@@ -12,6 +12,26 @@ const Reservacion = use("App/Models/Reservacion");
 
 class NegocioController {
 
+  // Acciones en la pagina
+
+  async obteneridnombrenegocio({request, response}) {
+    const { email } = request.all();
+    const validation = await validate(request.all(), {
+      email: 'required | email',
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const negocio = await Negocio.query().with('usuario').where('id', id_negocio).fetch();
+      const data = negocio.toJSON();
+      return response.status(200).send({ status: 'ok', data: negocio, room:data[0].id +data[0].nombre })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
 
   async existeNegocio({request, response}) {
     const { nombre } = request.all();
@@ -46,6 +66,8 @@ class NegocioController {
       return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error })
     }
   }
+
+  // Actualizar un negocio
 
   async updateNegocio({ request, response }) {
     const { email, nombre, ubicacion, id_categoria, informacion, lat, lng, foto } = request.all();
@@ -197,7 +219,7 @@ class NegocioController {
   }
 
   async getMenuByNegocioEmail({ request, response }) {
-    const { email } = request.all();
+    const { email, page } = request.all();
 
     const validation = await validate(request.all(), {
       email: 'required | email',
@@ -207,14 +229,15 @@ class NegocioController {
       return response.status(400).send({ message: validation.messages(), error: "Falta el email" })
     }
 
-    const id_negocio = await Manager.obteneridNegocio(email);
 
     try {
-      const menu = await Negocio.query().with('menu.categoria').where('id', id_negocio).fetch();
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const menu = await Menu.query().with('categoria').where('id_negocio', id_negocio)
+        .paginate(page, 5);
 
-      return response.status(200).send({ data: menu })
+      return response.status(200).send({status: 'ok', data: menu })
     } catch (error) {
-      return response.status(400).send({ status: 'error', type: error, message: 'Hubo un error' })
+      return response.status(400).send({ status: 'error', type: error.message, message: 'Hubo un error' })
     }
   }
 
@@ -256,6 +279,10 @@ class NegocioController {
     }
 
   }
+  // Termina menu
+
+  // Fotos
+
 
   async historia({ response, request }) {
     const { id_usuario, id_negocio, duracion, url_file, tipo, url_miniatura, descripcion } = request.all();
@@ -285,6 +312,7 @@ class NegocioController {
 
   }
 
+
   async fotos({ response, request }) {
     const { foto, id_negocio } = request.all();
     const fotos = new Foto();
@@ -304,10 +332,12 @@ class NegocioController {
 
     }
   }
+  // Terminan fotos
+
+  // Comentarios
 
   async comentarios({ response, request }) {
     const { email } = request.all();
-    const id_negocio = await Manager.obteneridNegocio(email);
     const validation = await validate(request.all(), {
       email: 'required | email'
     });
@@ -315,8 +345,9 @@ class NegocioController {
       return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
     }
     try {
+      const id_negocio = await Manager.obteneridNegocio(email);
       const negocio = await Comentario.query().with('usuario').where("id_negocio", id_negocio).fetch();
-      const count = await Manager.countComentarios( id_negocio )
+      const count = await Manager.countComentarios( id_negocio );
       if (count === 0) {
         return response.send({
           status: "ok", message: 'No tiene comentarios'
@@ -359,8 +390,13 @@ class NegocioController {
     }
   }
 
-  async obtenerEventosNegocio({request, response }) {
-    const { email } = request.all();
+  // Termina comentarios
+
+
+  // reservaciones
+
+  async obtenerReservaciones({request, response}) {
+    const { email, page }  = request.all();
     const validation = await validate(request.all(), {
       email: 'required | email'
     });
@@ -370,35 +406,11 @@ class NegocioController {
     }
     try {
       const id_negocio = await Manager.obteneridNegocio(email);
-      const eventos = await Evento.query().where('id_negocio', id_negocio).fetch();
-      return response.status(200).send({ status: 'ok', data: eventos })
+      const reservaciones = await Reservacion.query().with('usuario').where('id_negocio', id_negocio)
+        .paginate(page, 5);
+      return response.status(200).send({ status:'ok', data: reservaciones })
     } catch (error) {
-      return response.send({status: "error", message: 'Hubo un error', error: error.message});
-    }
-  }
-
-  async obtenerEventosFecha({request, response }) {
-    const { email, fecha } = request.all();
-
-    const validation = await validate(request.all(), {
-      email: 'required | email',
-      fecha: 'required',
-    });
-
-    if (validation.fails()) {
-      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
-    }
-
-    try {
-      const id_negocio = await Manager.obteneridNegocio(email);
-      const count = await Manager.CountEventos(id_negocio);
-      if (count == 0) {
-        return response.status(200).send({ status: 'ok', data: [], messages:"No hay comentarios" })
-      }
-      const eventos = await Evento.query().where('id_negocio', id_negocio).where('fecha', fecha).fetch();
-      return response.status(200).send({ status: 'ok', data: eventos })
-    } catch (error) {
-      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+      return response.status(400).send({ status:'error', message: 'Hubo un error', type: error.message })
     }
   }
 
@@ -449,10 +461,15 @@ class NegocioController {
       return response.status(400).send({ message: 'algo salio mal', error: error })
     }
   }
-  async obteneridnombrenegocio({request, response}) {
+
+  // Terminan reservaciones
+
+  // Eventos
+
+  async obtenerEventosNegocio({request, response }) {
     const { email } = request.all();
     const validation = await validate(request.all(), {
-      email: 'required | email',
+      email: 'required | email'
     });
 
     if (validation.fails()) {
@@ -460,9 +477,33 @@ class NegocioController {
     }
     try {
       const id_negocio = await Manager.obteneridNegocio(email);
-      const negocio = await Negocio.query().with('usuario').where('id', id_negocio).fetch();
-      const data = negocio.toJSON();
-      return response.status(200).send({ status: 'ok', data: negocio, room:data[0].id +data[0].nombre })
+      const eventos = await Evento.query().where('id_negocio', id_negocio).fetch();
+      return response.status(200).send({ status: 'ok', data: eventos })
+    } catch (error) {
+      return response.send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async obtenerEventosFecha({request, response }) {
+    const { email, fecha } = request.all();
+
+    const validation = await validate(request.all(), {
+      email: 'required | email',
+      fecha: 'required',
+    });
+
+    if (validation.fails()) {
+      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
+    }
+
+    try {
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const count = await Manager.CountEventos(id_negocio);
+      if (count == 0) {
+        return response.status(200).send({ status: 'ok', data: [], messages:"No hay comentarios" })
+      }
+      const eventos = await Evento.query().where('id_negocio', id_negocio).where('fecha', fecha).fetch();
+      return response.status(200).send({ status: 'ok', data: eventos })
     } catch (error) {
       return response.send({status: "error", message: 'Hubo un error', error: error.message});
     }
@@ -558,24 +599,7 @@ class NegocioController {
     }
   }
 
-  async obtenerReservaciones({request, response}) {
-    const { email }  = request.all();
-    const validation = await validate(request.all(), {
-      email: 'required | email'
-    });
-
-    if (validation.fails()) {
-      return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
-    }
-    try {
-      const id_negocio = await Manager.obteneridNegocio(email);
-      const reservaciones = await Reservacion.query().with('usuario').where('id_negocio', id_negocio).fetch();
-      return response.status(200).send({ status:'ok', data: reservaciones })
-    } catch (error) {
-      return response.status(400).send({ status:'error', message: 'Hubo un error', type: error.message })
-    }
-  }
-
+  // Terminan eventos
 }
 
 module.exports = NegocioController
