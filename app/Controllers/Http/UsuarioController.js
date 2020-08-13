@@ -13,6 +13,7 @@ class UsuarioController {
       .query()
       .with('negocio')
       .where('id_usuario', id)
+      .where('confirmacion', '!=', 'CANCELADO')
       .fetch()
       return response.status(200).send({ status: 'ok', data: result });
 
