@@ -11,7 +11,6 @@ class CheckToken {
    */
   async handle ({ request , auth, response}, next) {
     const token = request.header('Authorization');
-    console.log(token);
     try {
       await auth.check();
       await next()

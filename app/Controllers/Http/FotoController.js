@@ -4,6 +4,7 @@ const PublitioAPI = use("publitio_js_sdk");
 const { validate } = use("Validator");
 const Foto = use("App/Models/Fotos");
 const User = use("App/Models/User");
+const Manager = use("App/Controller/ManagerController");
 const Negocio = use("App/Models/Negocios");
 
 
@@ -22,11 +23,8 @@ class FotoController {
     }
 
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
-
-      const negocio = await Negocio.find(id);
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const negocio = await Negocio.find(id_negocio);
       const foto = await negocio.fotos().create({
         foto: url
       });
