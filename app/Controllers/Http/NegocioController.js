@@ -415,12 +415,11 @@ class NegocioController {
   }
 
   async updateReservacion({ request, response }) {
-    const {id, dia, confirmacion, personas, zona } = request.all();
+    const {id, dia, personas, zona } = request.all();
 
     const validation = await validate(request.all(), {
       id: 'required',
       dia: 'required',
-      confirmacion: 'required',
       personas: 'required',
       zona: 'required',
 
@@ -434,7 +433,6 @@ class NegocioController {
 
       const reservacion = await Reservacion.query().where('id', id).update({
         dia: dia,
-        confirmacion: confirmacion,
         personas: personas,
         zona: zona,
       });
