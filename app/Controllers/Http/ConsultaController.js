@@ -4,6 +4,7 @@ const Negocio = use("App/Models/Negocios");
 const Categoria = use("App/Models/Categorias");
 const { validate } = use("Validator");
 const Comentario = use("App/Models/Comentario");
+const Reservacion = use("App/Models/Reservacion");
 
 
 class ConsultaController {
@@ -324,6 +325,20 @@ class ConsultaController {
     } catch (e) {
       return response.status(400).send({ status: 'error', error: e.message });
     }
+  }
+
+  async buscarReservacion({ request, response }) {
+
+    const { data } = request.all()
+
+    const resul = await Reservacion
+      .query()
+      .innerJoin('users', 'users.id', 'reservaciones.id_usuario')
+      .select('reservaciones.id' ,'id_usuario','id_negocio', 'dia', 'confirmacion', 'personas', 'zona' )
+      .where('users.nombre', 'LIKE', '%' + data + '%')
+      .orWhere('reservaciones.dia', 'LIKE', '%' + data + '%')
+      .fetch()
+    return response.status(200).send({ status: 'ok', data: resul });
   }
 
 }

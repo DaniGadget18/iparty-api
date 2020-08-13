@@ -83,6 +83,7 @@ Route.group( () => {
   Route.post('obtenerReservaciones', 'NegocioController.obtenerReservaciones');
   Route.post('updateReservacion', 'NegocioController.updateReservacion');
   Route.post('cancelarReservacion', 'NegocioController.cancelarReservacion');
+  Route.post('buscarReservacion', 'ConsultaController.buscarReservacion');
 
   // consultas
   Route.get('top', 'ConsultaController.top');
