@@ -9,7 +9,7 @@ class NegocioSchema extends Schema {
       table.increments()
       table.string('foto', 80).nullable()
       table.string('nombre', 80).notNullable().unique()
-      table.string('ubicacion', 80).Nullable()
+      table.string('ubicacion', 80).nullable()
       table.string('informacion', 80).notNullable()
       table.decimal('lat', 10, 8).nullable()
       table.decimal('lng', 11, 8).nullable()
