@@ -108,13 +108,13 @@ class NegocioController {
   async updateHorarioNegocio({ request, response }) {
     const { email, lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
 
+
+
     try {
       const id = await Manager.obteneridNegocio(email);
-
-
       const count = await Manager.tieneHorarioNegocio(id)
 
-      if (count == 0) {
+      if (count === 0) {
         const horario = new HorarioNegocio();
         horario.id_negocio = id,
           horario.lunes = lunes,
@@ -350,7 +350,7 @@ class NegocioController {
       const count = await Manager.countComentarios( id_negocio );
       if (count === 0) {
         return response.send({
-          status: "ok", message: 'No tiene comentarios'
+          status: "ok", message: 'No tiene comentarios', data:[]
         });
       }
       else {
@@ -379,7 +379,7 @@ class NegocioController {
       const count = await Manager.CountRank(id_negocio, rank);
       if (count === 0) {
         return response.send({
-          status: "ok", message: 'No tiene comentarios'
+          status: "ok", message: 'No tiene comentarios', data: []
         });
       }
       else {

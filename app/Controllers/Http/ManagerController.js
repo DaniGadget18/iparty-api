@@ -10,7 +10,6 @@ class ManagerController {
       const negociousuario = await User.query().with('administradores').where('email', email).fetch();
       const resp = negociousuario.toJSON();
       return resp[0]['administradores'][0]['id'];
-
   }
 
   static async tieneHorarioNegocio( id ){
