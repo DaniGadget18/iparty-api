@@ -17,9 +17,16 @@ class RootAdministradorController {
       nombreAdmin: 'required'
     });
 
-
     if (validation.fails()) {
-      return response.status(400).send({ status: 'error', message: 'Falta un campo' })
+      return response.status(400).send({ status: 'error', message: 'Falta un campo' });
+    }
+
+    if (await Negocio.findBy('nombre', nombre)){
+      return response.status(400).send({ status: 'error', message: 'Ya existe un negocio con ese nombre' });
+    }
+
+    if (await User.findBy('email', email)){
+      return response.status(400).send({ status: 'error', message: 'Ya existe un usuario con ese email' });
     }
 
     try {
