@@ -341,6 +341,25 @@ class ConsultaController {
     return response.status(200).send({ status: 'ok', data: resul });
   }
 
+  async getAll({  response }) {
+
+    try {
+      const data = await Negocio
+        .query()
+        .with('categoria_negocio')
+        .with('fotos')
+        .with('horarios')
+        .with('eventos')
+        .with('menu.categoria')
+        .with('historias.usuario')
+        .with('comentarios.usuario')
+        .fetch()
+      return response.status(200).send({ status: 'ok', data: data });
+    } catch (e) {
+      return response.status(400).send({ status: 'error', error: e.message });
+    }
+  }
+
 }
 
 module.exports = ConsultaController
