@@ -379,7 +379,7 @@ class NegocioController {
       const count = await Manager.CountRank(id_negocio, rank);
       if (count === 0) {
         return response.send({
-          status: "ok", message: 'No tiene comentarios'
+          status: "ok", message: 'No tiene comentarios', data: []
         });
       }
       else {
