@@ -23,6 +23,7 @@ Route.get('/api', () => {
 
 Route.group(() => {
  Route.get('check', 'SesionController.checkAuth');
+ Route.post('newToken', 'SesionController.generateNewToken');
  Route.post('login', 'SesionController.sesion');
  Route.post('signup', 'SesionController.registrar');
  Route.post('update', 'SesionController.editarusuario');
@@ -110,7 +111,7 @@ Route.group( () => {
   Route.get('Billares', 'ConsultaController.getBillar')
   Route.get('Clubs', 'ConsultaController.getClubs')
   Route.post('favs', 'ConsultaController.getFavs')
-  Route.post('all', 'ConsultaController.getAll')
+  Route.get('all', 'ConsultaController.getAll')
 }).prefix('api/negocio/').middleware('checktoken')
 
 
