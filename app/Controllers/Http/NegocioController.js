@@ -108,13 +108,13 @@ class NegocioController {
   async updateHorarioNegocio({ request, response }) {
     const { email, lunes, martes, miercoles, jueves, viernes, sabado, domingo } = request.all();
 
+
+
     try {
       const id = await Manager.obteneridNegocio(email);
-
-
       const count = await Manager.tieneHorarioNegocio(id)
 
-      if (count == 0) {
+      if (count === 0) {
         const horario = new HorarioNegocio();
         horario.id_negocio = id,
           horario.lunes = lunes,

@@ -11,11 +11,11 @@ class CheckToken {
    */
   async handle ({ request , auth, response}, next) {
     const token = request.header('Authorization');
-    try {
+    if (token) {
       await auth.check();
       await next()
-    } catch (error) {
-      response.status(400).send({ status:'error', error: error.message, message: 'Token invalido' });
+    } else {
+      return 'Token invalido'
     }
   }
 }
