@@ -111,7 +111,7 @@ Route.group( () => {
   Route.get('Billares', 'ConsultaController.getBillar')
   Route.get('Clubs', 'ConsultaController.getClubs')
   Route.post('favs', 'ConsultaController.getFavs')
-  Route.post('all', 'ConsultaController.getAll')
+  Route.get('all', 'ConsultaController.getAll')
 }).prefix('api/negocio/').middleware('checktoken')
 
 
