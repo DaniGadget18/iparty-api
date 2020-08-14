@@ -350,7 +350,7 @@ class NegocioController {
       const count = await Manager.countComentarios( id_negocio );
       if (count === 0) {
         return response.send({
-          status: "ok", message: 'No tiene comentarios'
+          status: "ok", message: 'No tiene comentarios', data:[]
         });
       }
       else {
