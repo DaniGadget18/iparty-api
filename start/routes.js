@@ -50,6 +50,13 @@ Route.group( () => {
 }).prefix('api/usuario/').middleware('checktoken');
 
 Route.group( () => {
+  //Panel de Control
+  Route.post('comentariosPorEstrellas', 'ConsultaController.comentariosPorEstrellas');
+  Route.post('reservacionesDia', 'ConsultaController.reservacionesDia');
+  Route.post('reservacionesDiaSemana', 'ConsultaController.reservacionesDiaSemana');
+  Route.post('promedioPopu', 'ConsultaController.promedioPopu');
+  Route.post('totalComentarios', 'ConsultaController.totalComentarios');
+
   // Negocios
   Route.post('obteneridnombrenegocio', 'NegocioController.obteneridnombrenegocio');
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
