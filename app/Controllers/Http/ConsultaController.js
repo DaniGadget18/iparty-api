@@ -1,10 +1,13 @@
 'use strict'
 
+const ManagerController = require("./ManagerController");
+
 const Negocio = use("App/Models/Negocios");
 const Categoria = use("App/Models/Categorias");
 const { validate } = use("Validator");
 const Comentario = use("App/Models/Comentario");
 const Reservacion = use("App/Models/Reservacion");
+
 
 
 class ConsultaController {
@@ -343,39 +346,42 @@ class ConsultaController {
 
   async totalComentarios({ request, response }) {
 
-    const { data } = request.all()
+    const { email } = request.all()
+    const id_negocio = await ManagerController.obteneridNegocio(email)
 
     const resul = await Comentario
     .query()
     .count('* as total')
-    .where('id_negocio', data)
+    .where('id_negocio', id_negocio)
 
     return response.status(200).send({ status: 'ok', data: resul });
   }
 
   async reservacionesDia({ request, response }) {
 
-    const { data } = request.all()
+    const { email } = request.all()
+    const id_negocio = await ManagerController.obteneridNegocio(email)
 
     const resul = await Reservacion
       .query()
       .count("* as total ")
       .whereRaw("day(created_at) = now()")
-      .where('id_negocio', data)
+      .where('id_negocio', id_negocio)
 
     return response.status(200).send({ status: 'ok', data: resul });
   }
 
   async reservacionesDiaSemana({ request, response }) {
 
-    const { data } = request.all()
+    const { email } = request.all()
+    const id_negocio = await ManagerController.obteneridNegocio(email)
 
     const resul = await Reservacion
       .query()
       .select('created_at')
       .groupByRaw("day(created_at)")
       .count('* as total')
-      .where('id_negocio', data)
+      .where('id_negocio', id_negocio)
       .limit(7)
       .orderBy("created_at","ASC")
 
@@ -384,12 +390,13 @@ class ConsultaController {
 
   async promedioPopu({ request, response }) {
 
-    const { data } = request.all()
+    const { email } = request.all()
+    const id_negocio = await ManagerController.obteneridNegocio(email)
 
     const resul = await Negocio
     .query()
     .select('popularidad')
-    .where('id', data)
+    .where('id', id_negocio)
     .fetch()
 
     return response.status(200).send({ status: 'ok', data: resul });
@@ -397,17 +404,18 @@ class ConsultaController {
 
   async comentariosPorEstrellas({ request, response }) {
 
-    const { data } = request.all()
+    const { email } = request.all()
+    const id_negocio = await ManagerController.obteneridNegocio(email)
 
     const resul = await Comentario
     .query()
     .select('calificacion')
     .groupBy('calificacion')
     .count('* as total')
-    .where('id_negocio', data)
+    .where('id_negocio', id_negocio)
     return response.status(200).send({ status: 'ok', data: resul });
   }
-  
+
   async getAll({  response }) {
 
     try {
