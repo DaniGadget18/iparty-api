@@ -38,6 +38,7 @@ Route.group( () => {
   Route.post('registrarNegocio', 'RootAdministradorController.registrarNegocioLucid');
   Route.post('registrarRoot', 'RootAdministradorController.registrarRoot');
   Route.post('existeNegocio', 'NegocioController.existeNegocio');
+  Route.post('eliminarUsuario', 'RootAdministradorController.elimiarAdministrador');
 
 
 }).prefix('api/root/').middleware('checktoken');
@@ -59,8 +60,7 @@ Route.group( () => {
   // Fotos negocios
   Route.post('subirfoto', 'FotoController.subirFotosNegocio');
   Route.post('getFotoByNegocioEmail', 'FotoController.getFotoByNegocioEmail');
-
-  Route.post('deleteFotoNegocio', 'FotoController.deleteFotoNegocio');
+  Route.post('eliminarFotoNegocio', 'FotoController.eliminarFotoNegocio');
   Route.get('getFotoById', 'FotoController.getFotoById');
 
   // Menu negocio

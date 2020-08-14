@@ -46,11 +46,10 @@ class RootAdministradorController {
 
   async obtenerNegocios({ response }) {
     try {
-      const negocios = await Negocio.all();
-      console.log(negocios.length);
+      const negocios = await Negocio.query().with('usuario').fetch();
       return response.status(200).send({ status: 'ok', data: negocios });
     } catch (e) {
-      return response.status(400).send({ status: 'ok', message: 'Hubo un error' });
+      return response.status(400).send({ status: 'ok', message: 'Hubo un error', error: e.message });
     }
   }
 
@@ -109,6 +108,18 @@ class RootAdministradorController {
     try {
       const roots = await User.query().has('root').fetch();
       return response.status(200).send({ status: 'ok', data: roots });
+    } catch (error) {
+      return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error.message })
+    }
+  }
+
+  async elimiarAdministrador({ response, request }){
+    const { id } = request.all();
+    try {
+      const usuario = await User.find(id);
+      await usuario.root().delete();
+      await usuario.delete();
+      return response.status(200).send({ status: 'ok', message: 'Eliminado correctamente', data: usuario });
     } catch (error) {
       return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error.message })
     }

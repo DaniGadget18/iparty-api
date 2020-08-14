@@ -50,12 +50,20 @@ class FotoController {
     }
 
     try {
-      const negociousuario = await User.query().with('administradores').where('email', email).fetch();
-      const resp = negociousuario.toJSON();
-      const id = resp[0]['administradores'][0]['id'];
-
-      const fotos = await Negocio.query().with('fotos').where('id', id).fetch();
+      const id_negocio = await Manager.obteneridNegocio(email);
+      const fotos = await Foto.query().where('id_negocio', id_negocio).fetch();
       return response.status(200).send({status:'ok', data:fotos})
+    } catch (error) {
+      return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
+    }
+  }
+
+  async eliminarFotoNegocio( {request, response}) {
+    const { id } = request.all();
+    try {
+      const foto = await Foto.find(id);
+      await foto.delete();
+      return response.status(200).send({status:'ok', message:'Se elimino correctamente la foto'})
     } catch (error) {
       return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
     }
