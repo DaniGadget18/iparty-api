@@ -4,7 +4,7 @@ const PublitioAPI = use("publitio_js_sdk");
 const { validate } = use("Validator");
 const Foto = use("App/Models/Fotos");
 const User = use("App/Models/User");
-const Manager = use("App/Controller/ManagerController");
+const Manager = use("App/Controllers/Http/ManagerController");
 const Negocio = use("App/Models/Negocios");
 
 
