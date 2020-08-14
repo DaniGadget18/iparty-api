@@ -51,7 +51,7 @@ class FotoController {
 
     try {
       const id_negocio = await Manager.obteneridNegocio(email);
-      const fotos = await Foto.all();
+      const fotos = await Foto.query().where('id_negocio', id_negocio).fetch();
       return response.status(200).send({status:'ok', data:fotos})
     } catch (error) {
       return response.status(400).send({status:'error', type:error, message:'Hubo un error'})
