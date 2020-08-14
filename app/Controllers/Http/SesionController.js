@@ -34,9 +34,8 @@ class SesionController {
         }
 
         try {
-
           const accessOnline = await Manager.idNegocioOnline(email);
-          const token = await auth.attempt(email, password);
+          const token = await auth.withRefreshToken().attempt(email, password);
           const root = await Manager.isRoot(email);
           if (root > 0){
             return response.status(200).send({status:'ok', data: { token, email, accessOnline}, isRoot: true });
@@ -134,19 +133,40 @@ class SesionController {
 
     async checkAuth({ response, request, auth }) {
       const token = request.header('Authorization');
+      const { refresh } = request.all();
       console.log(token)
       try {
-        await auth.check();
-        const nowUser = await auth.getUser();
-        const root = await Manager.isRoot(nowUser.email);
-        if (root > 0) {
-          return response.status(200).send({status:'ok', data: nowUser, role:{ isRoot: true, role: 'root' } });
-        } else {
-          return response.status(200).send({status:'ok', data: nowUser, role: { isRoot: false, role: 'admin'} });
+        const check = await auth.check();
+        if (check){
+          const nowUser = await auth.getUser();
+          const root = await Manager.isRoot(nowUser.email);
+          if (root > 0) {
+            return response.status(200).send({status:'ok', data: nowUser, role:{ isRoot: true, role: 'root' } });
+          } else {
+            return response.status(200).send({status:'ok', data: nowUser, role: { isRoot: false, role: 'admin'} });
+          }
         }
       } catch (error) {
-        response.status(200).send({status:'error', error: error.message})
+        response.status(200).send({status:'error', error: error.message, type:'token', message: 'Ocurrio un problema con el token'})
       }
+    }
+
+    async newToken({ request, response, auth }) {
+      const token = request.header('Authorization');
+      const { refresh } = request.all();
+      let gtoken = '';
+      try {
+        const check = await auth.check();
+        if (check){
+          gtoken = {token: token }
+        } else {
+          gtoken = await auth.generateForRefreshToken(refresh, false)
+        }
+        return response.status(200).send({status:'ok', data: gtoken});
+      } catch (error) {
+        return response.status(400).send({status:'error', error: error.message, message: 'Hubo un error'});
+      }
+
     }
 
 }

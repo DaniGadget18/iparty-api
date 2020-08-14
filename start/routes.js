@@ -23,6 +23,7 @@ Route.get('/api', () => {
 
 Route.group(() => {
  Route.get('check', 'SesionController.checkAuth');
+ Route.post('newToken', 'SesionController.generateNewToken');
  Route.post('login', 'SesionController.sesion');
  Route.post('signup', 'SesionController.registrar');
  Route.post('update', 'SesionController.editarusuario');
