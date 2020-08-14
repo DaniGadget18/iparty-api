@@ -341,6 +341,73 @@ class ConsultaController {
     return response.status(200).send({ status: 'ok', data: resul });
   }
 
+  async totalComentarios({ request, response }) {
+
+    const { data } = request.all()
+
+    const resul = await Comentario
+    .query()
+    .count('* as total')
+    .where('id_negocio', data)
+
+    return response.status(200).send({ status: 'ok', data: resul });
+  }
+
+  async reservacionesDia({ request, response }) {
+
+    const { data } = request.all()
+
+    const resul = await Reservacion
+      .query()
+      .count("* as total ")
+      .whereRaw("day(created_at) = now()")
+      .where('id_negocio', data)
+
+    return response.status(200).send({ status: 'ok', data: resul });
+  }
+
+  async reservacionesDiaSemana({ request, response }) {
+
+    const { data } = request.all()
+
+    const resul = await Reservacion
+      .query()
+      .select('created_at')
+      .groupByRaw("day(created_at)")
+      .count('* as total')
+      .where('id_negocio', data)
+      .limit(7)
+      .orderBy("created_at","ASC")
+
+    return response.status(200).send({ status: 'ok', data: resul });
+  }
+
+  async promedioPopu({ request, response }) {
+
+    const { data } = request.all()
+
+    const resul = await Negocio
+    .query()
+    .select('popularidad')
+    .where('id', data)
+    .fetch()
+
+    return response.status(200).send({ status: 'ok', data: resul });
+  }
+
+  async comentariosPorEstrellas({ request, response }) {
+
+    const { data } = request.all()
+
+    const resul = await Comentario
+    .query()
+    .select('calificacion')
+    .groupBy('calificacion')
+    .count('* as total')
+    .where('id_negocio', data)
+    return response.status(200).send({ status: 'ok', data: resul });
+  }
+
 }
 
 module.exports = ConsultaController
