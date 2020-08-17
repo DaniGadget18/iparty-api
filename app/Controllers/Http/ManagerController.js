@@ -19,17 +19,12 @@ class ManagerController {
   }
 
   static async countComentarios(id_negocio) {
-    try {
-      const negocio_comentario = await Negocio
-        .query()
-        .withCount('comentarios').where("id", id_negocio)
-        .fetch()
-      const data = negocio_comentario.toJSON();
-      return data[0]['__meta__']['comentarios_count']
-    } catch (error) {
-      console.log(error)
-    }
-
+    const negocio_comentario = await Negocio
+      .query()
+      .withCount('comentarios').where("id", id_negocio)
+      .fetch()
+    const data = negocio_comentario.toJSON();
+    return data[0]['__meta__']['comentarios_count']
   }
 
   static async CountRank(id_negocio, rank) {
@@ -38,7 +33,11 @@ class ManagerController {
       .withCount('usuario').where("id_negocio", id_negocio).where("calificacion", rank)
       .fetch()
     const data = comentario_usuario.toJSON();
-    return data[0]["__meta__"]["comentarios_count"];
+    if (data[0] === undefined){
+      return 0;
+    } else {
+      return data[0]["__meta__"]["comentarios_count"];
+    }
   }
 
   static async CountEventos(id_negocio) {

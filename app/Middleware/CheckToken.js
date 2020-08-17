@@ -10,18 +10,14 @@ class CheckToken {
    * @param {Function} next
    */
   async handle ({ request , auth, response}, next) {
-    const token = request.header('Authorization');
     try {
       await auth.check();
       await next()
     } catch (error) {
-      return response.status(400).send({
-        status: 'error',
-        message: 'Token expirado / invalido',
-        type: 'token',
-        error: error.message
-      });
+      response.status(400).send({ status:'error', message: 'Token expirado / invalido', error: error.message })
     }
+
+
   }
 }
 
