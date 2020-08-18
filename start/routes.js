@@ -18,7 +18,7 @@ const Route = use('Route')
 
 Route.get('/api', () => {
   return { greeting: 'Hello' }
-})
+}).as('api')
 
 
 Route.group(() => {
@@ -29,7 +29,8 @@ Route.group(() => {
  Route.post('correo', 'SesionController.correo');
  Route.post('usuario', 'SesionController.usuario').middleware('checktoken');
  Route.post('recuperacion/verificar', 'SesionController.enviarMailderecuperacion');
- Route.post('confirmacion/:id', 'NegocioController.confirmarReservacion');
+ Route.get('confirmacion/:id', 'NegocioController.confirmarReservacion');
+
  Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')
  Route.post('validacioncodigo', 'SesionController.validarcodigo')
  Route.post('cambiocontrasena', 'SesionController.cambiocontrasena')
@@ -128,7 +129,7 @@ Route.group( () => {
   Route.post('favs', 'ConsultaController.getFavs')
   Route.get('all', 'ConsultaController.getAll')
 
-}).prefix('api/negocio/')//.middleware('checktoken')
+}).prefix('api/negocio/').middleware('checktoken')
 
 
 
