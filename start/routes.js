@@ -42,6 +42,17 @@ Route.group( () => {
   Route.post('existeNegocio', 'NegocioController.existeNegocio');
   Route.post('eliminarUsuario', 'RootAdministradorController.elimiarAdministrador');
 
+  // Categorias negocio
+  Route.get('Categorias', 'CategoriaController.obtenerCategorias');
+  Route.post('crearCategoria', 'CategoriaController.createCategoria');
+  Route.post('borrarCategoria', 'CategoriaController.deleteCategoria');
+
+  // Obtener Menu categoria
+  Route.get('getAllCategorias', 'CategoriaController.obtenerCategoriasMenu');
+  Route.post('crearCategoriaMenu', 'CategoriaController.createCategoriaMenu');
+  Route.post('borrarCategoriaMenu', 'CategoriaController.deleteCategoriaMenu');
+
+
 
 }).prefix('api/root/').middleware('checktoken');
 
@@ -64,16 +75,6 @@ Route.group( () => {
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
 
-  // Categorias
-  Route.get('Categorias', 'CategoriaController.obtenerCategorias');
-  Route.post('crearCategoria', 'CategoriaController.createCategoria');
-  Route.post('borrarCategoria', 'CategoriaController.deleteCategoria');
-
-
-
-
-
-
 
   // Horarios negocio
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
@@ -87,13 +88,6 @@ Route.group( () => {
   // Menu negocio
   Route.post('updateMenuByNegocio', 'NegocioController.updateMenuByNegocio');
   Route.post('getAllMenuByNegocio', 'NegocioController.getMenuByNegocioEmail');
-  Route.get('getAllCategorias', 'CategoriaController.obtenerCategoriasMenu');
-  Route.post('crearCategoriaMenu', 'CategoriaController.createCategoriaMenu');
-  Route.post('borrarCategoriaMenu', 'CategoriaController.deleteCategoriaMenu');
-
-
-
-
 
   Route.post('registrarProductoNegocio', 'NegocioController.registrarProductoNegocio');
   Route.post('obtenerMenuid', 'NegocioController.obtenerMenubyID');
