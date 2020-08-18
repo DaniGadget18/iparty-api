@@ -58,6 +58,7 @@ Route.group( () => {
 
 Route.group( () => {
   Route.post('reservaciones', 'UsuarioController.getReservaciones');
+  Route.post('informacion', 'UsuarioController.obtenerUsuarioPorEmail');
 
 }).prefix('api/usuario/').middleware('checktoken');
 

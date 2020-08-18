@@ -24,6 +24,18 @@ class UsuarioController {
 
   }
 
+  async obtenerUsuarioPorEmail({request, response}){
+
+    const {email} = request.all()
+
+    try {
+      const usuario = await User.findBy('email', email)
+      return response.status(200).send({ message: 'Encontrado con exito.', data: usuario })
+    } catch (error) {
+      return response.status(400).send({ message: 'ERROR', data: ex.message })
+    }
+  }
+
 }
 
 module.exports = UsuarioController
