@@ -82,9 +82,11 @@ class SesionController {
         //return response.status(200).send({message:'Has creado tu usuario con exito.'})
     }
     async editarusuario({request,response}){
-        const { nombre, email, foto, fecha_nacimiento} = request.all()
+        const { nombre, email, foto} = request.all()
 
-        const user = await Database
+        try {
+
+          const user = await Database
           .table('users')
           .where('email',email)
           .update({
@@ -93,8 +95,12 @@ class SesionController {
           })
 
 
-        const editar = await Database.from('users').where('email', email)
-        return response.status(200).send({message:'usuario editado con exito', data:editar})
+          const editar = await Database.from('users').where('email', email)
+          return response.status(200).send({message:'usuario editado con exito', data:editar})
+        } catch (error) {
+          return response.status(400).send({message:'Ocurrio un problema.', error:error.message})
+        }
+
       }
 
       async usuario({ request,  response }) {
@@ -162,7 +168,7 @@ class SesionController {
         }
       }
 
-      
+
 
       try{
 

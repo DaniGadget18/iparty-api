@@ -26,14 +26,14 @@ Route.group(() => {
  Route.post('newToken', 'SesionController.newToken');
  Route.post('login', 'SesionController.sesion');
  Route.post('signup', 'SesionController.registrar');
- Route.post('update', 'SesionController.editarusuario');
  Route.post('correo', 'SesionController.correo');
- Route.post('usuario', 'SesionController.usuario');
+ Route.post('usuario', 'SesionController.usuario').middleware('checktoken');
  Route.post('recuperacion', 'SesionController.enviarMailderecuperacion');
  Route.post('recuperacion/verificar', 'SesionController.enviarMailderecuperacion');
 }).prefix('api/')
 
 Route.group( () => {
+
   Route.get('obtenerNegocios', 'RootAdministradorController.obtenerNegocios');
   Route.get('administradoresroot', 'RootAdministradorController.obtenerAdministradoresRoot');
   Route.post('obtenerNegociobyid', 'RootAdministradorController.obtenerNegocioByID');
@@ -52,13 +52,13 @@ Route.group( () => {
   Route.post('crearCategoriaMenu', 'CategoriaController.createCategoriaMenu');
   Route.post('borrarCategoriaMenu', 'CategoriaController.deleteCategoriaMenu');
 
-
-
 }).prefix('api/root/').middleware('checktoken');
 
 Route.group( () => {
+
   Route.post('reservaciones', 'UsuarioController.getReservaciones');
   Route.post('informacion', 'UsuarioController.obtenerUsuarioPorEmail');
+  Route.post('update', 'SesionController.editarusuario');
 
 }).prefix('api/usuario/').middleware('checktoken');
 
@@ -123,7 +123,9 @@ Route.group( () => {
   Route.get('Clubs', 'ConsultaController.getClubs')
   Route.post('favs', 'ConsultaController.getFavs')
   Route.get('all', 'ConsultaController.getAll')
-}).prefix('api/negocio/').middleware('checktoken')
+
+  Route.post('confirmarAsistencia', 'NegocioController.enviarCorreoConfirmacion')
+}).prefix('api/negocio/')//.middleware('checktoken')
 
 Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')
 

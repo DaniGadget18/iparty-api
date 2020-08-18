@@ -8,6 +8,7 @@ const Comentario = use("App/Models/Comentario");
 const Evento = use("App/Models/Evento");
 const Manager = use("App/Controllers/Http/ManagerController");
 const Reservacion = use("App/Models/Reservacion");
+const Mail = use('Mail')
 
 class NegocioController {
 
@@ -586,6 +587,27 @@ class NegocioController {
   }
 
   // Terminan eventos
+
+  async enviarCorreoConfirmacion({request, response}){
+    const { id } = request.all()
+
+    try {
+
+      const reservacion = Reservacion.find(id).with('usuario').with('usuario');
+
+      console.log(reservacion)
+      /*await Mail.send('mails.confirmacion', reservacion, (message, error) => {
+        console.log(data)
+        message
+          .to(email)
+          .from(data.from.mail)
+          .subject("prueba")
+      })*/
+
+    } catch (error) {
+
+    }
+  }
 }
 
 module.exports = NegocioController
