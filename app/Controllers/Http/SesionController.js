@@ -173,6 +173,8 @@ class SesionController {
            .from(data.from.mail)
            .subject("Recuperacion de contraseña")
        })
+       var correo = email;
+       var estado=true;
        const Codigos = await Codigo.create({
         correo,
         codigo,
