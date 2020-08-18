@@ -376,12 +376,12 @@ class ConsultaController {
 
     const resul = await Reservacion
       .query()
-      .select('created_at')
-      .groupByRaw("day(created_at)")
+      .select('dia')
+      .groupByRaw("day(dia)")
       .count('* as total')
       .where('id_negocio', id_negocio)
       .limit(7)
-      .orderBy("created_at","ASC")
+      .orderBy("dia","ASC")
 
     return response.status(200).send({ status: 'ok', data: resul });
   }
