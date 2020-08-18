@@ -30,6 +30,7 @@ Route.group(() => {
  Route.post('usuario', 'SesionController.usuario').middleware('checktoken');
  Route.post('recuperacion', 'SesionController.enviarMailderecuperacion');
  Route.post('recuperacion/verificar', 'SesionController.enviarMailderecuperacion');
+ Route.post('confirmacion/:id', 'NegocioController.confirmarReservacion');
 }).prefix('api/')
 
 Route.group( () => {
@@ -107,6 +108,7 @@ Route.group( () => {
   Route.post('updateReservacion', 'NegocioController.updateReservacion');
   Route.post('cancelarReservacion', 'NegocioController.cancelarReservacion');
   Route.post('buscarReservacion', 'ConsultaController.buscarReservacion');
+  Route.post('confirmarAsistencia', 'NegocioController.enviarCorreoConfirmacion')
 
   // consultas
   Route.post('comentariosranked', 'NegocioController.comentariosranked');
@@ -124,7 +126,6 @@ Route.group( () => {
   Route.post('favs', 'ConsultaController.getFavs')
   Route.get('all', 'ConsultaController.getAll')
 
-  Route.post('confirmarAsistencia', 'NegocioController.enviarCorreoConfirmacion')
 }).prefix('api/negocio/')//.middleware('checktoken')
 
 Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')

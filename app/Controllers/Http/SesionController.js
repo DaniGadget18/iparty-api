@@ -5,7 +5,7 @@ const Manager = use("App/Controllers/Http/ManagerController");
 const Root = use("App/Models/Root");
 const Database = use("Database");
 const Hash = use('Hash')
-var randomstring = require("randomstring");
+const randomstring = use("randomstring");
 const Mail = use('Mail')
 const Codigo = use("App/Models/Codigos")
 class SesionController {
@@ -173,7 +173,7 @@ class SesionController {
 
 
       try{
-  
+
         await Mail.send('mails.mail', data, (message, error) => {
           console.log(data)
           message
@@ -189,18 +189,18 @@ class SesionController {
         codigo,
         estado,
       });
-  
-  
-  
+
+
+
         return response.status(200).send({ message: 'correo enviado', data: email })
       }
       catch(ex) {
         return response.status(400).send({ message: 'ERROR', data: ex.message })
       }
-    
+
     }
 
-      
+
 
     }
 
@@ -229,21 +229,21 @@ class SesionController {
     }
 
     async cambiocontrasena({ request, response, }) {
-     
+
       const { password, email } = request.all()
       const validation = await validate(request.all(), {
-        
+
         password: 'required|min:5',
         email: 'required | email'
       });
       if (validation.fails()) {
         return response.send({ status: 202, message: validation.messages() })
-      
+
       }
       try {
         const evento = await User.query().where('email', email).update({
           password
-          
+
         });
         return response.status(200).send({ status: 'ok', message: 'se ha cambiado la contraseña exitosamente' })
       } catch (error) {
@@ -254,8 +254,8 @@ class SesionController {
 
 
 
-  
-    
+
+
 
 }
 

@@ -595,18 +595,36 @@ class NegocioController {
 
       const reservacion = await Reservacion.query().with('usuario').with('negocio.usuario').where('id',id).fetch();
       const reservacionJSON = reservacion.toJSON()
-      console.log(reservacionJSON[0].dia)
+      const convercion = new Date(reservacionJSON[0].dia)
+      const dia = convercion.toLocaleDateString()
+      const hora = convercion.toLocaleTimeString()
+      reservacionJSON[0].dia = {dia,hora}
 
-      /*await Mail.send('mails.confirmacion', reservacionJSON[0], (message, error) => {
+      await Mail.send('mails.confirmacion', reservacionJSON[0], (message, error) => {
         message
           .to(reservacionJSON[0].usuario.email)
           .from(reservacionJSON[0].negocio.usuario[0].email)
           .subject("Confirmar Asistencia")
-      })*/
+      })
 
-      return response.status(200).send({ status: 'ok', mensaje: 'Sen envio el correo con exito.', data:reservacion })
+      return response.status(200).send({ status: 'ok', mensaje: 'Sen envio el correo con exito.', data:reservacionJSON[0] })
     } catch (error) {
       return response.status(400).send({status: "error", message: 'Hubo un error', error: error.message});
+    }
+  }
+
+  async confirmarReservacion(id) {
+
+    try {
+      console.log(id.id)
+
+      const reservacion = await Reservacion.query().where('id', id).update({
+        confirmacion: "CONFIRMADO",
+      });
+
+      return {"bien" : reservacion} //response.status(200).send({ message: 'Reservavion editada con exito', data: reservacion })
+    } catch (error) {
+      return {"error" : error.message} //response.status(400).send({ message: 'algo salio mal', error: error.message })
     }
   }
 }
