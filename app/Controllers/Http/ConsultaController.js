@@ -3,7 +3,6 @@
 const ManagerController = require("./ManagerController");
 
 const Negocio = use("App/Models/Negocios");
-const Categoria = use("App/Models/Categorias");
 const { validate } = use("Validator");
 const Comentario = use("App/Models/Comentario");
 const Reservacion = use("App/Models/Reservacion");
@@ -11,80 +10,7 @@ const Evento = use("App/Models/Evento");
 
 class ConsultaController {
 
-  async cat({ response }) {
-    const neg = await Negocio.query().with('comentarios.usuario').with('fotos').with('horarios').with('categoria_negocio').with('menu.categoria').fetch();
-
-    const cat = await Categoria.all();
-    const p = [];
-    var aux;
-    var auxa;
-    var myObj = {};
-    var result = [];
-
-    for (let i in cat.rows) {
-      const pp = [];
-      p.push(cat.rows[i]['categoria'])
-      aux = cat.rows[i]['categoria'];
-      auxa = cat.rows[i]['id'];
-
-      for (let i in neg.rows) {
-        if (neg.rows[i]['id_categoria'] == auxa) {
-          pp.push(neg.rows[i])
-        }
-      }
-      myObj[aux] = pp;
-
-    }
-    result.push(JSON.parse(JSON.stringify(myObj)));
-    var asd = {};
-
-    for (let i in cat.rows) {
-      const ppt = [];
-      p.push(cat.rows[i]['categoria'])
-      aux = cat.rows[i]['categoria'];
-      auxa = cat.rows[i]['id'];
-
-      for (let i in result) {
-        var obj = JSON.parse(JSON.stringify(result), function (key, value) {
-          if (key == aux) {
-            console.log("yeajjs", key)
-            asd[aux] = JSON.parse(JSON.stringify(result.rows[0]))
-          } else {
-            return value;
-          }
-        });
-      }
-    }
-    return response.status(200).send({ message: 'Negocio editado con exito', data: obj })
-  }
-
-  async top({ response }) {
-    const categorias = await Categoria.query()
-      .with('negocios.comentarios.usuario')
-      .with('negocios.fotos')
-      .with('negocios.menu.categoria')
-      .fetch();
-    //const negocios = await Negocio.find(15);
-    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu.categoria').fetch();
-    //const comentarios = await comentario.profile().first();
-    return response.status(200).send({ message: 'Negocio editado con exito', data: categorias })
-
-
-    /*const categorias = await Categoria.query()
-      .with('negocios.comentarios.usuario')
-      .with('negocios.fotos')
-      .with('negocios.menu.categoria')
-      .with('negocios.categoria_negocio')
-      .fetch();*/
-    //const negocios = await Negocio.find(15);
-    //const negocio_comentario = await Negocio.query().with('comentarios').with('fotos').with('menu.categoria').fetch();
-    //const comentarios = await comentario.profile().first();
-
-    return response.status(200).send({ message: 'HOLI', data: myObj })
-
-  }
-
-  async getTop5({ response }) {
+  async getTop5Negocios({ response }) {
 
     try {
 

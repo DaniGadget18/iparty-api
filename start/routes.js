@@ -65,7 +65,15 @@ Route.group( () => {
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
 
   // Categorias
-  Route.get('Categorias', 'NegocioController.obtenerCategorias');
+  Route.get('Categorias', 'CategoriaController.obtenerCategorias');
+  Route.post('crearCategoria', 'CategoriaController.createCategoria');
+  Route.post('borrarCategoria', 'CategoriaController.deleteCategoria');
+
+
+
+
+
+
 
   // Horarios negocio
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
@@ -79,7 +87,14 @@ Route.group( () => {
   // Menu negocio
   Route.post('updateMenuByNegocio', 'NegocioController.updateMenuByNegocio');
   Route.post('getAllMenuByNegocio', 'NegocioController.getMenuByNegocioEmail');
-  Route.get('getAllCategorias', 'NegocioController.obtenerCategoriasMenu');
+  Route.get('getAllCategorias', 'CategoriaController.obtenerCategoriasMenu');
+  Route.post('crearCategoriaMenu', 'CategoriaController.createCategoriaMenu');
+  Route.post('borrarCategoriaMenu', 'CategoriaController.deleteCategoriaMenu');
+
+
+
+
+
   Route.post('registrarProductoNegocio', 'NegocioController.registrarProductoNegocio');
   Route.post('obtenerMenuid', 'NegocioController.obtenerMenubyID');
   Route.post('eliminarProducto', 'NegocioController.eliminarProducto');
@@ -99,14 +114,10 @@ Route.group( () => {
   Route.post('buscarReservacion', 'ConsultaController.buscarReservacion');
 
   // consultas
-  Route.get('top', 'ConsultaController.top');
-  Route.get('test', 'ConsultaController.test');
-  Route.get('top', 'ConsultaController.top');
-  Route.get('cat', 'ConsultaController.cat');
   Route.post('comentariosranked', 'NegocioController.comentariosranked');
   Route.post('comentarios', 'NegocioController.comentarios');
   Route.post('historia', 'NegocioController.historia');
-  Route.get('top5', 'ConsultaController.getTop5')
+  Route.get('top5', 'ConsultaController.getTop5Negocios')
   Route.get('getTop5ByCategoria', 'ConsultaController.getTop5ByCategoria')
   Route.post('createComentario', 'ConsultaController.createComentario')
   Route.post('buscador', 'ConsultaController.getBusqueda')
