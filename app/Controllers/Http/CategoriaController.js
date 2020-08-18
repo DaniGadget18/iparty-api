@@ -24,6 +24,13 @@ class CategoriaController {
     if (validation.fails()) {
       return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
     }
+
+    const yaexiste = await Categoria.findBy("categoria",categoria)
+    console.log(yaexiste)
+    if (yaexiste) {
+      return response.status(400).send({ message: "error", error:"Ya existe ese nombre." })
+    }
+
     try {
       const categori = new Categoria();
       categori.categoria = categoria
@@ -61,6 +68,12 @@ class CategoriaController {
     if (validation.fails()) {
       return response.status(400).send({ message: validation.messages(), error:"Falta algun campo" })
     }
+
+    const yaexiste = await CategoriaMenu.findBy("nombre", nombre)
+    if (yaexiste) {
+      return response.status(400).send({ message: "error", error:"Ya existe ese nombre." })
+    }
+
     try {
       const categori = new CategoriaMenu();
       categori.nombre = nombre
