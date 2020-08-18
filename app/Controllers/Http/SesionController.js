@@ -169,9 +169,9 @@ class SesionController {
           currency: 'USD'
         }
       }
-  
-      
-  
+
+
+
       try{
   
         await Mail.send('mails.mail', data, (message, error) => {

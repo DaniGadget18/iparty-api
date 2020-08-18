@@ -3,13 +3,12 @@ const { validate } = use("Validator");
 const Menu = use("App/Models/Menus");
 const HorarioNegocio = use("App/Models/HorariosNegocio");
 const Negocio = use("App/Models/Negocios");
-const CategoriaMenu = use("App/Models/Categoriamenu");
 const Historia = use("App/Models/Historia");
 const Comentario = use("App/Models/Comentario");
 const Evento = use("App/Models/Evento");
-const Categoria = use("App/Models/Categorias");
 const Manager = use("App/Controllers/Http/ManagerController");
 const Reservacion = use("App/Models/Reservacion");
+const Mail = use('Mail')
 
 class NegocioController {
 
@@ -68,14 +67,7 @@ class NegocioController {
     }
   }
 
-  async obtenerCategorias( {request, response}) {
-    try {
-      const categorias = await Categoria.all()
-      return response.status(200).send({ status: 'ok', data: categorias })
-    } catch (error) {
-      return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error })
-    }
-  }
+
 
   // Actualizar un negocio
 
@@ -158,14 +150,7 @@ class NegocioController {
 
 
   // Menu
-  async obtenerCategoriasMenu({ request, response }) {
-    try {
-      const categoriasMenu = await CategoriaMenu.all();
-      return response.status(200).send({ status: 'ok', data: categoriasMenu })
-    } catch (error) {
-      return response.status(400).send({ status: 'error', message: 'algo salio mal', error: error.message })
-    }
-  }
+
 
   async registrarProductoNegocio({ request, response }) {
     const { email, nombre, informacion, idcategoriamenu } = request.all();
@@ -602,6 +587,27 @@ class NegocioController {
   }
 
   // Terminan eventos
+
+  async enviarCorreoConfirmacion({request, response}){
+    const { id } = request.all()
+
+    try {
+
+      const reservacion = Reservacion.find(id).with('usuario').with('usuario');
+
+      console.log(reservacion)
+      /*await Mail.send('mails.confirmacion', reservacion, (message, error) => {
+        console.log(data)
+        message
+          .to(email)
+          .from(data.from.mail)
+          .subject("prueba")
+      })*/
+
+    } catch (error) {
+
+    }
+  }
 }
 
 module.exports = NegocioController

@@ -26,14 +26,14 @@ Route.group(() => {
  Route.post('newToken', 'SesionController.newToken');
  Route.post('login', 'SesionController.sesion');
  Route.post('signup', 'SesionController.registrar');
- Route.post('update', 'SesionController.editarusuario');
  Route.post('correo', 'SesionController.correo');
- Route.post('usuario', 'SesionController.usuario');
+ Route.post('usuario', 'SesionController.usuario').middleware('checktoken');
  Route.post('recuperacion', 'SesionController.enviarMailderecuperacion');
  Route.post('recuperacion/verificar', 'SesionController.enviarMailderecuperacion');
 }).prefix('api/')
 
 Route.group( () => {
+
   Route.get('obtenerNegocios', 'RootAdministradorController.obtenerNegocios');
   Route.get('administradoresroot', 'RootAdministradorController.obtenerAdministradoresRoot');
   Route.post('obtenerNegociobyid', 'RootAdministradorController.obtenerNegocioByID');
@@ -42,11 +42,23 @@ Route.group( () => {
   Route.post('existeNegocio', 'NegocioController.existeNegocio');
   Route.post('eliminarUsuario', 'RootAdministradorController.elimiarAdministrador');
 
+  // Categorias negocio
+  Route.get('Categorias', 'CategoriaController.obtenerCategorias');
+  Route.post('crearCategoria', 'CategoriaController.createCategoria');
+  Route.post('borrarCategoria', 'CategoriaController.deleteCategoria');
+
+  // Obtener Menu categoria
+  Route.get('getAllCategorias', 'CategoriaController.obtenerCategoriasMenu');
+  Route.post('crearCategoriaMenu', 'CategoriaController.createCategoriaMenu');
+  Route.post('borrarCategoriaMenu', 'CategoriaController.deleteCategoriaMenu');
 
 }).prefix('api/root/').middleware('checktoken');
 
 Route.group( () => {
+
   Route.post('reservaciones', 'UsuarioController.getReservaciones');
+  Route.post('informacion', 'UsuarioController.obtenerUsuarioPorEmail');
+  Route.post('update', 'SesionController.editarusuario');
 
 }).prefix('api/usuario/').middleware('checktoken');
 
@@ -64,8 +76,6 @@ Route.group( () => {
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
 
-  // Categorias
-  Route.get('Categorias', 'NegocioController.obtenerCategorias');
 
   // Horarios negocio
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');
@@ -79,7 +89,7 @@ Route.group( () => {
   // Menu negocio
   Route.post('updateMenuByNegocio', 'NegocioController.updateMenuByNegocio');
   Route.post('getAllMenuByNegocio', 'NegocioController.getMenuByNegocioEmail');
-  Route.get('getAllCategorias', 'NegocioController.obtenerCategoriasMenu');
+
   Route.post('registrarProductoNegocio', 'NegocioController.registrarProductoNegocio');
   Route.post('obtenerMenuid', 'NegocioController.obtenerMenubyID');
   Route.post('eliminarProducto', 'NegocioController.eliminarProducto');
@@ -99,14 +109,10 @@ Route.group( () => {
   Route.post('buscarReservacion', 'ConsultaController.buscarReservacion');
 
   // consultas
-  Route.get('top', 'ConsultaController.top');
-  Route.get('test', 'ConsultaController.test');
-  Route.get('top', 'ConsultaController.top');
-  Route.get('cat', 'ConsultaController.cat');
   Route.post('comentariosranked', 'NegocioController.comentariosranked');
   Route.post('comentarios', 'NegocioController.comentarios');
   Route.post('historia', 'NegocioController.historia');
-  Route.get('top5', 'ConsultaController.getTop5')
+  Route.get('top5', 'ConsultaController.getTop5Negocios')
   Route.get('getTop5ByCategoria', 'ConsultaController.getTop5ByCategoria')
   Route.post('createComentario', 'ConsultaController.createComentario')
   Route.post('buscador', 'ConsultaController.getBusqueda')
@@ -117,7 +123,9 @@ Route.group( () => {
   Route.get('Clubs', 'ConsultaController.getClubs')
   Route.post('favs', 'ConsultaController.getFavs')
   Route.get('all', 'ConsultaController.getAll')
-}).prefix('api/negocio/').middleware('checktoken')
+
+  Route.post('confirmarAsistencia', 'NegocioController.enviarCorreoConfirmacion')
+}).prefix('api/negocio/')//.middleware('checktoken')
 
 Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')
 Route.post('validacioncodigo', 'SesionController.validarcodigo')
