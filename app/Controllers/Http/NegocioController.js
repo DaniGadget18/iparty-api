@@ -616,9 +616,9 @@ class NegocioController {
   async confirmarReservacion(id) {
 
     try {
-      console.log(id.id)
+      console.log(id.params["id"])
 
-      const reservacion = await Reservacion.query().where('id', id).update({
+      const reservacion = await Reservacion.query().where('id', id.params["id"]).update({
         confirmacion: "CONFIRMADO",
       });
 
