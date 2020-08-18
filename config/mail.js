@@ -23,18 +23,18 @@ module.exports = {
   |
   */
   smtp: {
-    driver: 'smtp',
-    pool: true,
-    port: Env.get('SMTP_PORT', 587),
-    host: 'smtp.gmail.com',
+    driver: "smtp",
+    pool: false,
+    port:  Env.get("SMTP_PORT"),//465, //2525 //465
+    host: Env.get("SMTP_HOST"),
     secure: true,
     auth: {
-      user: Env.get('17090083@utt.edu.mx'),
-      pass: Env.get('Mayela97')
+      user: Env.get("MAIL_USERNAME"),
+      pass: Env.get("MAIL_PASSWORD")
     },
-    maxConnections: 5,
-    maxMessages: 100,
-    rateLimit: 10
+    maxConnections: 50,
+    maxMessages: 1000,
+    rateLimit: 100
   },
 
   /*

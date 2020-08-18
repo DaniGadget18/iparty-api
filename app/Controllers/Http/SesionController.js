@@ -98,18 +98,6 @@ class SesionController {
         return response.status(200).send({message:'usuario editado con exito', data:editar})
       }
 
-      async correo ({ request, response }) {
-        const { email} = request.all()
-
-
-        await Mail.raw('asda', (message) => {
-            message.from(email)
-            message.to('baz@bar.com')
-          })
-
-        return 'Registered successfully  stack'
-      }
-
       async usuario({ request,  response }) {
         const { email } = request.all();
         const userr =await User.findBy("email", email);
@@ -167,6 +155,48 @@ class SesionController {
         return response.status(400).send({status:'error', error: error.message, message: 'Hubo un error'});
       }
 
+    }
+
+    async enviarMailderecuperacion ({ request, response, }) {
+
+      const {email} = request.all()
+
+      const data = {
+        to: {
+          mail: email
+        },
+        from: {
+          mail: 'admin@iparty.com',
+          name: 'AdonisJS Demo - MailGun'
+        },
+        subject: 'Purchase details for #XYZ-123',
+        text: 'Testing some Mailgun awesomness!',
+        date: '00-00-0000 00:00:00',
+        book: {
+          sku: 'P001',
+          title: 'Build Apps with Adonis.JS',
+          price: 5,
+          currency: 'USD'
+        }
+      }
+
+      
+
+      try{
+
+        await Mail.send('mails.mail', data, (message, error) => {
+          console.log(data)
+          message
+            .to(email)
+            .from(data.from.mail)
+            .subject("prueba")
+        })
+
+        return response.status(200).send({ message: 'correo enviado', data: email })
+      }
+      catch(ex) {
+        return response.status(400).send({ message: 'ERROR', data: ex.message })
+      }
     }
 
 }

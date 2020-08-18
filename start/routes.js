@@ -29,7 +29,8 @@ Route.group(() => {
  Route.post('update', 'SesionController.editarusuario');
  Route.post('correo', 'SesionController.correo');
  Route.post('usuario', 'SesionController.usuario');
-
+ Route.post('recuperacion', 'SesionController.enviarMailderecuperacion');
+ Route.post('recuperacion/verificar', 'SesionController.enviarMailderecuperacion');
 }).prefix('api/')
 
 Route.group( () => {
@@ -56,6 +57,7 @@ Route.group( () => {
   Route.post('reservacionesDiaSemana', 'ConsultaController.reservacionesDiaSemana');
   Route.post('promedioPopu', 'ConsultaController.promedioPopu');
   Route.post('totalComentarios', 'ConsultaController.totalComentarios');
+  Route.post('eventosProximos', 'ConsultaController.eventosProximos');
 
   // Negocios
   Route.post('obteneridnombrenegocio', 'NegocioController.obteneridnombrenegocio');
@@ -113,5 +115,7 @@ Route.group( () => {
   Route.post('favs', 'ConsultaController.getFavs')
   Route.get('all', 'ConsultaController.getAll')
 }).prefix('api/negocio/').middleware('checktoken')
+
+Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')
 
 

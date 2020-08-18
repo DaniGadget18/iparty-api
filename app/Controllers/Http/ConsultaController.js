@@ -7,8 +7,7 @@ const Categoria = use("App/Models/Categorias");
 const { validate } = use("Validator");
 const Comentario = use("App/Models/Comentario");
 const Reservacion = use("App/Models/Reservacion");
-
-
+const Evento = use("App/Models/Evento");
 
 class ConsultaController {
 
@@ -414,6 +413,24 @@ class ConsultaController {
     .count('* as total')
     .where('id_negocio', id_negocio)
     return response.status(200).send({ status: 'ok', data: resul });
+  }
+
+  async eventosProximos({ request, response }) {
+
+    const { email } = request.all()
+    const id_negocio = await ManagerController.obteneridNegocio(email)
+
+    const resul = await Evento
+    .query()
+    .groupByRaw("day(created_at)")
+    .count('* as total')
+    .whereRaw('fecha => now()')
+    .orderBy("created_at","ASC")
+    .limit(3)
+    .where('id_negocio', id_negocio)
+
+    return response.status(200).send({ status: 'ok', data: resul });
+
   }
 
   async getAll({  response }) {
