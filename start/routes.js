@@ -129,5 +129,6 @@ Route.group( () => {
 
 Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')
 Route.post('validacioncodigo', 'SesionController.validarcodigo')
+Route.post('cambiocontrasena', 'SesionController.cambiocontrasena')
 
 

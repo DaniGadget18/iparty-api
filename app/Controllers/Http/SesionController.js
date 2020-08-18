@@ -228,9 +228,33 @@ class SesionController {
 
     }
 
+    async cambiocontrasena({ request, response, }) {
+     
+      const { password, email } = request.all()
+      const validation = await validate(request.all(), {
+        
+        password: 'required|min:5',
+        email: 'required | email'
+      });
+      if (validation.fails()) {
+        return response.send({ status: 202, message: validation.messages() })
+      
+      }
+      try {
+        const evento = await User.query().where('email', email).update({
+          password
+          
+        });
+        return response.status(200).send({ status: 'ok', message: 'se ha cambiado la contraseña exitosamente' })
+      } catch (error) {
+        return response.send({status: "error", message: 'Hubo un error', error: error.message});
+      }
+
+    }
 
 
 
+  
     
 
 }
