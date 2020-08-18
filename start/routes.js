@@ -28,8 +28,12 @@ Route.group(() => {
  Route.post('signup', 'SesionController.registrar');
  Route.post('correo', 'SesionController.correo');
  Route.post('usuario', 'SesionController.usuario').middleware('checktoken');
- Route.post('recuperacion', 'SesionController.enviarMailderecuperacion');
  Route.post('recuperacion/verificar', 'SesionController.enviarMailderecuperacion');
+
+
+  Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')
+  Route.post('validacioncodigo', 'SesionController.validarcodigo')
+  Route.post('cambiocontrasena', 'SesionController.cambiocontrasena')
 }).prefix('api/')
 
 Route.group( () => {
@@ -127,8 +131,6 @@ Route.group( () => {
   Route.post('confirmarAsistencia', 'NegocioController.enviarCorreoConfirmacion')
 }).prefix('api/negocio/')//.middleware('checktoken')
 
-Route.post('recuperacion', 'SesionController.enviarMailderecuperacion')
-Route.post('validacioncodigo', 'SesionController.validarcodigo')
-Route.post('cambiocontrasena', 'SesionController.cambiocontrasena')
+
 
 
