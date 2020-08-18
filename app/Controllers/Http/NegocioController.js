@@ -593,19 +593,20 @@ class NegocioController {
 
     try {
 
-      const reservacion = Reservacion.find(id).with('usuario').with('usuario');
+      const reservacion = await Reservacion.query().with('usuario').with('negocio.usuario').where('id',id).fetch();
+      const reservacionJSON = reservacion.toJSON()
+      console.log(reservacionJSON[0].dia)
 
-      console.log(reservacion)
-      /*await Mail.send('mails.confirmacion', reservacion, (message, error) => {
-        console.log(data)
+      /*await Mail.send('mails.confirmacion', reservacionJSON[0], (message, error) => {
         message
-          .to(email)
-          .from(data.from.mail)
-          .subject("prueba")
+          .to(reservacionJSON[0].usuario.email)
+          .from(reservacionJSON[0].negocio.usuario[0].email)
+          .subject("Confirmar Asistencia")
       })*/
 
+      return response.status(200).send({ status: 'ok', mensaje: 'Sen envio el correo con exito.', data:reservacion })
     } catch (error) {
-
+      return response.status(400).send({status: "error", message: 'Hubo un error', error: error.message});
     }
   }
 }

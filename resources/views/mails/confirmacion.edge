@@ -1,10 +1,12 @@
-<h2>Hello </h2>
+<h2>{{ negocio.nombre }}</h2>
 <p style="padding-top: 16px;">
-  Thank you for your purchase!
+  Hola {{ usuario.nombre }} este correo es para recordarte que has hecho una reservacion en {{ negocio.nombre }}.
+  <p>Dia y Hora: {{ dia }} </p>
+  <p>Numero de personas: {{ personas}}</p>
+  <p>Zona: {{ zona }}</p>
+  Por favor confirma tu asistencia ingresando al siguiente link:
 </p>
 
-<p style="padding-top: 16px;">
-
-</p>
 <h2>
+  <a href="http://ec2-100-26-232-195.compute-1.amazonaws.com/api/confirmacion/{{ id }}">http://ec2-100-26-232-195.compute-1.amazonaws.com/api/confirmacion/{{ id }}</a>
 </h2>
