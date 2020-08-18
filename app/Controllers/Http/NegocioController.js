@@ -7,6 +7,7 @@ const CategoriaMenu = use("App/Models/Categoriamenu");
 const Historia = use("App/Models/Historia");
 const Comentario = use("App/Models/Comentario");
 const Evento = use("App/Models/Evento");
+const Categoria = use("App/Models/Categorias");
 const Manager = use("App/Controllers/Http/ManagerController");
 const Reservacion = use("App/Models/Reservacion");
 
@@ -63,6 +64,15 @@ class NegocioController {
       return response.status(200).send({ "status": 'ok', data: negocio })
     } catch (error) {
       console.log(error);
+      return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error })
+    }
+  }
+
+  async obtenerCategorias( {request, response}) {
+    try {
+      const categorias = await Categoria.all()
+      return response.status(200).send({ status: 'ok', data: categorias })
+    } catch (error) {
       return response.status(400).send({ status: 'error', message: "Hubo un error", "error": error })
     }
   }
@@ -381,8 +391,7 @@ class NegocioController {
         return response.send({
           status: "ok", message: 'No tiene comentarios', data: []
         });
-      }
-      else {
+      } else {
         return response.status(200).send({ status: 'ok', data: negocio })
       }
     } catch (error) {
@@ -562,8 +571,7 @@ class NegocioController {
       return response.status(400).send({ status:'error', message: validation.messages(), error: "Falta algun campo" })
     }
     try {
-      const evento = await Evento.find(id);
-      const data = evento.update({
+      const evento = await Evento.query().where('id', id).update({
         nombre,
         fecha,
         informacion,

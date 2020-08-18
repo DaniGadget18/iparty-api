@@ -23,7 +23,7 @@ Route.get('/api', () => {
 
 Route.group(() => {
  Route.get('check', 'SesionController.checkAuth');
- Route.post('newToken', 'SesionController.generateNewToken');
+ Route.post('newToken', 'SesionController.newToken');
  Route.post('login', 'SesionController.sesion');
  Route.post('signup', 'SesionController.registrar');
  Route.post('update', 'SesionController.editarusuario');
@@ -63,6 +63,9 @@ Route.group( () => {
   Route.post('obteneridnombrenegocio', 'NegocioController.obteneridnombrenegocio');
   Route.post('obtenerNegocio', 'NegocioController.obtenerNegocioByEmail');
   Route.post('editarNegocio', 'NegocioController.updateNegocio');
+
+  // Categorias
+  Route.get('Categorias', 'NegocioController.obtenerCategorias');
 
   // Horarios negocio
   Route.post('updateHorarioNegocio', 'NegocioController.updateHorarioNegocio');

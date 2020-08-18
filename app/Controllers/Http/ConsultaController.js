@@ -332,7 +332,6 @@ class ConsultaController {
   async buscarReservacion({ request, response }) {
 
     const { data } = request.all()
-
     const resul = await Reservacion
       .query()
       .innerJoin('users', 'users.id', 'reservaciones.id_usuario')
