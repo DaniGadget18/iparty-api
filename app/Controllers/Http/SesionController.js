@@ -142,55 +142,45 @@ class SesionController {
   }
 
   async enviarMailderecuperacion({ request, response, }) {
+
+
     const { email } = request.all()
 
-    const userFound = await User.findBy("email", email);
-    if (!userFound) {
+    const corre = await User.query().where("email", email).getCount();
+    if (corre==0) {
       return response.send({
         status: 202, message: 'Este email no esta registrado'
       });
     }
     else {
-      const data = {
-        to: {
-          mail: email
-        },
-        from: {
-          mail: 'admin@iparty.com',
-          name: 'AdonisJS Demo - MailGun'
-        },
-        subject: 'Purchase details for #XYZ-123',
-        text: 'Testing some Mailgun awesomness!',
-        date: '00-00-0000 00:00:00',
-        book: {
-          sku: 'P001',
-          title: 'Build Apps with Adonis.JS',
-          price: 5,
-          currency: 'USD'
-        }
-      }
-
-
+      
+    
 
       try{
-
-        await Mail.send('mails.mail', data, (message, error) => {
-          console.log(data)
-          message
-            .to(email)
-            .from(data.from.mail)
-            .subject("prueba")
-        })
-        var codigo = randomstring.generate(7);
-      var correo = email;
-      var estado = true;
-      const Codigos = await Codigo.create({
+        var userFound = await User.query().where("email", email).fetch();
+      var codigo = randomstring.generate(7);
+      var myObj = userFound.toJSON()
+       const convercion = new Date()
+       const dia = convercion.toLocaleDateString()
+       const hora = convercion.toLocaleTimeString()
+       myObj[0].dia = {dia,hora}
+       myObj[0].codigo=codigo
+       
+ 
+       await Mail.send('mails.confirmacion', myObj[0], (message, error) => {
+         message
+           .to(email)
+           .from(data.from.mail)
+           .subject("Recuperacion de contraseña")
+       })
+       const Codigos = await Codigo.create({
         correo,
         codigo,
         estado,
       });
 
-
+      
+      
 
         return response.status(200).send({ message: 'correo enviado', data: email })
       }
