@@ -421,7 +421,7 @@ class ConsultaController {
 
     const resul = await Evento
     .query()
-    .orderBy("created_at","ASC")
+    .orderBy("fecha","ASC")
     .whereRaw('fecha >= now()')
     .where('id_negocio', id_negocio)
     .limit(3)
