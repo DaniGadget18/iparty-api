@@ -258,14 +258,20 @@ class ConsultaController {
   async buscarReservacion({ request, response }) {
 
     const { data } = request.all()
-    const resul = await Reservacion
+    try {
+      const resul = await Reservacion
       .query()
       .innerJoin('users', 'users.id', 'reservaciones.id_usuario')
       .select('reservaciones.id' ,'id_usuario','id_negocio', 'dia', 'confirmacion', 'personas', 'zona' )
+      .with('usuario')
       .where('users.nombre', 'LIKE', '%' + data + '%')
       .orWhere('reservaciones.dia', 'LIKE', '%' + data + '%')
       .fetch()
-    return response.status(200).send({ status: 'ok', data: resul });
+      return response.status(200).send({ status: 'ok', data: resul });
+    } catch (error) {
+      return response.status(400).send({ status: 'ERROR', error: error.message });
+    }
+
   }
 
   async totalComentarios({ request, response }) {
