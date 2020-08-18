@@ -2,9 +2,10 @@
 const User = use('App/Models/User');
 const Negocio = use('App/Models/Negocios');
 const Comentario = use("App/Models/Comentario");
+const Codigo = use("App/Models/Codigos")
 
 
-class ManagerController {
+class ManagerController { 
 
   static async obteneridNegocio ( email ) {
       const negociousuario = await User.query().with('administradores').where('email', email).fetch();
@@ -47,6 +48,22 @@ class ManagerController {
       .fetch()
     const data = negocio_eventos.toJSON();
     return data[0]["__meta__"]["eventos_count"];
+  }
+
+  static async Countcodigos(correo, codio) {
+    const negocio_eventos = await Codigo
+      .query()
+      .where("correo", correo).where("codigo",codio).getCount("codigo")
+      
+    const data = negocio_eventos.toJSON();
+    return data
+    if(data[0]["__meta__"]["codigo_count"]===0){
+      return 0
+    }
+    else{
+      return data[0]["__meta__"]["codigo_count"];
+    }
+    
   }
 
   static async isRoot( email ) {

@@ -4,6 +4,7 @@
 const Model = use('Model')
 
 class Codigos extends Model {
+    
 }
 
 module.exports = Codigos
