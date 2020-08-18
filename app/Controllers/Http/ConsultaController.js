@@ -421,12 +421,11 @@ class ConsultaController {
 
     const resul = await Evento
     .query()
-    .groupByRaw("day(created_at)")
-    .count('* as total')
-    .whereRaw('fecha => now()')
     .orderBy("created_at","ASC")
-    .limit(3)
+    .whereRaw('fecha >= now()')
     .where('id_negocio', id_negocio)
+    .limit(3)
+    .fetch()
 
     return response.status(200).send({ status: 'ok', data: resul });
 
